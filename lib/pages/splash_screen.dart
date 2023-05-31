@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:dayalbusinesspartner/pages/homepage.dart';
-import 'package:dayalbusinesspartner/pages/loginpage.dart';
+// import 'package:dayalbusinesspartner/pages/loginpage.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -48,11 +48,17 @@ class SplashScreenState extends State<SplashScreen> {
                       )));
         } else {
           Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => const LoginPage()));
+              MaterialPageRoute(builder: (context) => const HomePage(
+                        id: 17,
+                        userType: "dealer",
+                      )));
         }
       } else {
         Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => const LoginPage()));
+            MaterialPageRoute(builder: (context) =>const HomePage(
+                        id: 17,
+                        userType: "dealer",
+                      )));
       }
     });
   }

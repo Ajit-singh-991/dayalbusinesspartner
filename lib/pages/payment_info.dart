@@ -4,14 +4,19 @@ import 'dart:developer';
 import 'package:dayalbusinesspartner/utils/app_decoration.dart';
 import 'package:dayalbusinesspartner/utils/app_style.dart';
 import 'package:dayalbusinesspartner/utils/custom_image_view.dart';
+import 'package:dayalbusinesspartner/utils/customsnackbar.dart';
 import 'package:dayalbusinesspartner/widgets/color_constant.dart';
 import 'package:dayalbusinesspartner/widgets/custom_button.dart';
+import 'package:dayalbusinesspartner/widgets/custom_drop_down.dart';
 import 'package:dayalbusinesspartner/widgets/custom_text_form_field.dart';
+import 'package:dayalbusinesspartner/widgets/date_form_field.dart';
 import 'package:dayalbusinesspartner/widgets/image_constant.dart';
 import 'package:dayalbusinesspartner/widgets/size_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
+import 'package:one_context/one_context.dart';
 
 // ignore_for_file: must_be_immutable
 class AddPayDetailsIosPage extends StatefulWidget {
@@ -25,13 +30,20 @@ class AddPayDetailsIosPage extends StatefulWidget {
 }
 
 class _AddPayDetailsIosPageState extends State<AddPayDetailsIosPage> {
-  TextEditingController dateController = TextEditingController();
+  List<String> dropdownItemList = ["RTGS", "NEFT", "Cash"];
+  TextEditingController _bankController = TextEditingController();
 
   TextEditingController amountController = TextEditingController();
 
   TextEditingController remarksController = TextEditingController();
 
+  final TextEditingController _dateController = TextEditingController();
+
   String name = '';
+  DateTime? selectedDate;
+  String paidviac = "";
+  String? selectedImageName;
+  String pickedimagePath = "";
 
   Future<void> fetchProfileData() async {
     const profileurl = 'http://66.94.34.21:8090/getProfile';
@@ -130,31 +142,35 @@ class _AddPayDetailsIosPageState extends State<AddPayDetailsIosPage> {
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.left,
                                 style: AppStyle.txtInterBold24)),
-                        CustomTextFormField(
-                            focusNode: FocusNode(),
-                            controller: dateController,
-                            hintText: "*Payment Date",
-                            margin: getMargin(top: 13)),
+                        DateFormField(
+                          focusNode: FocusNode(),
+                          controller: _dateController,
+                          hintText: 'Select a date',
+                          margin: getMargin(top: 9),
+                          context: context,
+                        ),
                         CustomTextFormField(
                             focusNode: FocusNode(),
                             controller: amountController,
                             hintText: "*Amount",
                             margin: getMargin(top: 9)),
-                        CustomButton(
-                            height: getVerticalSize(50),
-                            text: "Paid Via",
-                            margin: getMargin(top: 7),
-                            variant: ButtonVariant.OutlineGray400,
-                            shape: ButtonShape.RoundedBorder8,
-                            padding: ButtonPadding.PaddingT15,
-                            fontStyle: ButtonFontStyle.InterRegular15,
-                            suffixWidget: Container(
-                                margin: getMargin(left: 250),
+                        CustomTextFormField(
+                            focusNode: FocusNode(),
+                            controller: _bankController,
+                            hintText: "*Bank Name",
+                            margin: getMargin(top: 9)),
+                        CustomDropDown(
+                            focusNode: FocusNode(),
+                            icon: Container(
+                                margin: getMargin(left: 30, right: 37),
                                 child: CustomImageView(
                                     svgPath:
                                         ImageConstant.imgArrowdownGray400)),
-                            onTap: () {
-                              onTapPaidvia(context);
+                            hintText: "*Paid Via",
+                            items: dropdownItemList,
+                            margin: getMargin(top: 9),
+                            onChanged: (value) {
+                              paidviac = value;
                             }),
                         Container(
                             margin: getMargin(top: 8),
@@ -168,19 +184,34 @@ class _AddPayDetailsIosPageState extends State<AddPayDetailsIosPage> {
                                   Padding(
                                       padding: getPadding(
                                           left: 18, top: 7, bottom: 6),
-                                      child: Text("*Image",
+                                      child: Text(selectedImageName ?? "Image",
                                           overflow: TextOverflow.ellipsis,
                                           textAlign: TextAlign.left,
                                           style: AppStyle
                                               .txtInterRegular15Gray400)),
                                   CustomButton(
-                                      height: getVerticalSize(33),
-                                      width: getHorizontalSize(126),
-                                      text: "Upload",
-                                      variant: ButtonVariant.FillGray400,
-                                      shape: ButtonShape.RoundedBorder4,
-                                      fontStyle: ButtonFontStyle
-                                          .InterRegular15WhiteA700)
+                                    height: getVerticalSize(33),
+                                    width: getHorizontalSize(126),
+                                    text: "Upload",
+                                    variant: ButtonVariant.FillGray400,
+                                    shape: ButtonShape.RoundedBorder4,
+                                    fontStyle:
+                                        ButtonFontStyle.InterRegular15WhiteA700,
+                                    onTap: () async {
+                                      final pickedImage = await ImagePicker()
+                                          .pickImage(
+                                              source: ImageSource.gallery);
+                                      if (pickedImage != null) {
+                                        String imagePath = pickedImage.path;
+                                        String imageName =
+                                            imagePath.split('/').last;
+                                        setState(() {
+                                          selectedImageName = imageName;
+                                          pickedimagePath = imagePath;
+                                        });
+                                      }
+                                    },
+                                  )
                                 ])),
                         CustomTextFormField(
                             focusNode: FocusNode(),
@@ -210,12 +241,54 @@ class _AddPayDetailsIosPageState extends State<AddPayDetailsIosPage> {
     );
   }
 
-  onTapPaidvia(BuildContext context) {
-    // Navigator.pushNamed(context, AppRoutes.addPayDetailsIosOneScreen);
+  Future<void> updateData(String payDate, String amount, String payVia,
+      String image, String remark, String bank) async {
+    const paymenturl = 'http://66.94.34.21:9000/payment';
+    Map<String, dynamic> requestBody = {
+      "pay_date": payDate,
+      "amount": amount,
+      "pay_via": payVia,
+      "image": image,
+      "remark": remark,
+      "bank": bank,
+      "id": widget.id
+    };
+
+    String jsonBody = json.encode(requestBody);
+
+    try {
+      http.Response response = await http.post(
+        Uri.parse(paymenturl),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonBody,
+      );
+
+      if (response.statusCode == 200) {
+        log('Data updated successfully');
+      } else {
+        log('Failed to update data. Status code: ${response.statusCode}');
+      }
+    } catch (error) {
+      log('Error occurred while updating data: $error');
+    }
   }
 
   onTapDone(BuildContext context) {
-    // Navigator.pushNamed(context, AppRoutes.paymentIosScreen);
+    String payDate = _dateController.text;
+    String amount = amountController.text;
+    String payVia = paidviac;
+    String image = pickedimagePath;
+    String remark = remarksController.text;
+    String bank = _bankController.text;
+
+    updateData(payDate, amount, payVia, image, remark, bank);
+    OneContext().hideCurrentSnackBar();
+    OneContext().showSnackBar(
+        builder: (context) => ShowSnackBar()
+            .customBar("Updated Sucessfully".toString(), context!, true));
+    Navigator.pop(context);
   }
 
   onTapArrowleft3(BuildContext context) {

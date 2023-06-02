@@ -43,6 +43,7 @@ dependencies:
   flutter_svg: ^2.0.6
   cached_network_image: ^3.2.3
   intl: ^0.18.1
+  image_picker: ^0.8.7+5
   
 
 dev_dependencies:

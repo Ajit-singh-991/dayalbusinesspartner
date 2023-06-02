@@ -54,8 +54,6 @@ class _DashboardState extends State<Dashboard> {
     'Dec',
   ];
 
- 
-// final List<String> _months = DateFormat('MMMM').monthNames;
 
 void _changeMonth(int increment) {
   setState(() {
@@ -66,6 +64,7 @@ void _changeMonth(int increment) {
       _monthIndex = 0;
     }
   });
+  _fetchData();
 }
 
   Future<void> fetchledgerdata() async {

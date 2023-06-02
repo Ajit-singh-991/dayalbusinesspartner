@@ -8,6 +8,7 @@ import 'package:dayalbusinesspartner/pages/product_details_page.dart';
 import 'package:dayalbusinesspartner/widgets/color_constant.dart';
 import 'package:dayalbusinesspartner/widgets/size_utils.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+// import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -28,7 +29,7 @@ class _DashboardState extends State<Dashboard> {
   String ledger = '';
   String total = '';
   String dayal = '';
-  int _monthIndex = 0;
+  int _monthIndex = DateTime.now().month - 1;
   dynamic _monthlySales;
   dynamic _monthlyTarget;
   dynamic _annualSales;
@@ -53,19 +54,19 @@ class _DashboardState extends State<Dashboard> {
     'Dec',
   ];
 
-  void _changeMonth(int increment) {
-    setState(() {
-      _monthIndex += increment;
-      if (_monthIndex < 0) {
-        _monthIndex = 11;
-      } else if (_monthIndex > 11) {
-        _monthIndex = 0;
-      }
-    });
-    setState(() {
-      _fetchData();
-    });
-  }
+ 
+// final List<String> _months = DateFormat('MMMM').monthNames;
+
+void _changeMonth(int increment) {
+  setState(() {
+    _monthIndex += increment;
+    if (_monthIndex < 0) {
+      _monthIndex = 11;
+    } else if (_monthIndex > 11) {
+      _monthIndex = 0;
+    }
+  });
+}
 
   Future<void> fetchledgerdata() async {
     const profileurl = 'http://66.94.34.21:8090/getLedger';
@@ -132,7 +133,7 @@ class _DashboardState extends State<Dashboard> {
     final requestBody = {
       "id": widget.id,
       "month": _monthIndex + 1,
-      "year": 2023
+      "year": DateTime.now().year,
     };
 
     final response = await http.post(

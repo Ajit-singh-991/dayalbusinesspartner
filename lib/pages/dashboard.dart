@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:dayalbusinesspartner/pages/product_details_page.dart';
 import 'package:dayalbusinesspartner/widgets/color_constant.dart';
 import 'package:dayalbusinesspartner/widgets/size_utils.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -14,7 +15,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class Dashboard extends StatefulWidget {
   final int id;
-  const Dashboard({Key? key, required this.id}) : super(key: key);
+  final String userType;
+  const Dashboard({Key? key, required this.id, required this.userType}) : super(key: key);
 
   @override
   State<Dashboard> createState() => _DashboardState();
@@ -596,7 +598,7 @@ class _DashboardState extends State<Dashboard> {
                               ),
                               const SizedBox(height: 20),
                               _isLoading
-                                  ? const CircularProgressIndicator()
+                                  ? const Center(child: CircularProgressIndicator())
                                   : _buildTextWidget('Sale    ', _monthlySales),
                               _isLoading
                                   ? const SizedBox()
@@ -637,7 +639,7 @@ class _DashboardState extends State<Dashboard> {
                               ),
                               const SizedBox(height: 20),
                               _Loading
-                                  ? const CircularProgressIndicator()
+                                  ? const Center(child:  CircularProgressIndicator())
                                   : _buildTextWidget('Sale  ', _annualSales),
                               _Loading
                                   ? const SizedBox()
@@ -712,9 +714,23 @@ class _DashboardState extends State<Dashboard> {
                                             decoration: const BoxDecoration(
                                               color: Color(0xFFf4f4f4),
                                             ),
-                                            child: Image.network(projectSnap
-                                                .data![index]['image']
-                                                .toString()),
+                                            child: GestureDetector(
+                                              onTap: (){
+                                                Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      ProductDetailsPage(
+                                                    product: projectSnap
+                                                        .data![index], id: widget.id, userType: widget.userType,
+                                                  ),
+                                                ),
+                                              );
+                                              },
+                                              child: Image.network(projectSnap
+                                                  .data![index]['image']
+                                                  .toString()),
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -780,17 +796,31 @@ class _DashboardState extends State<Dashboard> {
                                             borderRadius:
                                                 BorderRadius.circular(5)),
                                         child: Center(
-                                          child: Container(
-                                            width: 150,
-                                            height: 150,
-                                            margin: const EdgeInsets.all(10),
-                                            padding: const EdgeInsets.all(5),
-                                            decoration: const BoxDecoration(
-                                              color: Color(0xFFf4f4f4),
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      ProductDetailsPage(
+                                                    product: projectSnap
+                                                        .data![index],id: widget.id, userType: widget.userType,
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                            child: Container(
+                                              width: 150,
+                                              height: 150,
+                                              margin: const EdgeInsets.all(10),
+                                              padding: const EdgeInsets.all(5),
+                                              decoration: const BoxDecoration(
+                                                color: Color(0xFFf4f4f4),
+                                              ),
+                                              child: Image.network(projectSnap
+                                                  .data![index]['image']
+                                                  .toString()),
                                             ),
-                                            child: Image.network(projectSnap
-                                                .data![index]['image']
-                                                .toString()),
                                           ),
                                         ),
                                       ),

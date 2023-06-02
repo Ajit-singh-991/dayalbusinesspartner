@@ -68,7 +68,8 @@ class _HomePageState extends State<HomePage> {
 
   final List _pages = <Widget>[];
   void initializePages() {
-    _pages.add(Dashboard(id: widget.id));
+    _pages.add(Dashboard(id: widget.id,
+      userType: widget.userType,));
     _pages.add(const Orders());
     _pages.add(PaymentDetails(
       id: widget.id,

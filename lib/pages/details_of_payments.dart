@@ -203,7 +203,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                   children: [
                                     Padding(
                                       padding: const EdgeInsets.fromLTRB(
-                                          30, 10, 0, 0),
+                                          30, 5, 0, 0),
                                       child: Row(
                                         children: [
                                           SvgPicture.asset(
@@ -218,7 +218,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                             style: TextStyle(
                                                 color: ColorConstant.gray600,
                                                 fontWeight: FontWeight.w500,
-                                                fontFamily: 'lato',
+                                                fontFamily: 'Inter',
                                                 fontSize: 16),
                                           ),
                                         ],
@@ -253,7 +253,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                             style: TextStyle(
                                                 color: ColorConstant.gray600,
                                                 fontWeight: FontWeight.w500,
-                                                fontFamily: 'lato',
+                                                fontFamily: 'Inter',
                                                 fontSize: 16),
                                           ),
                                         ],

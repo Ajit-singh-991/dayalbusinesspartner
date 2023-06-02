@@ -109,6 +109,7 @@ class _DealerDetailsState extends State<DealerDetails> {
         onTap: () => _toggleExpanded(index),
         child: SizedBox(
           height: _expandedStates[index] ? 300 : 80,
+          width: MediaQuery.of(context).size.width,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
@@ -167,7 +168,6 @@ class _DealerDetailsState extends State<DealerDetails> {
                             ),
                             SvgPicture.asset(
                               "assets/images/Vector (9).svg",
-                              width: 350,
                               height: 15,
                               fit: BoxFit.fill,
                             ),
@@ -208,7 +208,7 @@ class _DealerDetailsState extends State<DealerDetails> {
                                   fontWeight: FontWeight.bold,
                                   color: ColorConstant.gray600)),
                           const SizedBox(
-                            width: 70,
+                            width: 50,
                           ),
                           SizedBox(
                             height: 50,
@@ -226,7 +226,6 @@ class _DealerDetailsState extends State<DealerDetails> {
                                 children: [
                                   SvgPicture.asset(
                                     "assets/images/Vector (8).svg",
-                                    width: 350,
                                     height: 16,
                                     fit: BoxFit.fill,
                                   ),

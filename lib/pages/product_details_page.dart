@@ -296,8 +296,4 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
       ),
     );
   }
-
-  onTapArrowleft3(BuildContext context) {
-    Navigator.pop(context);
-  }
 }

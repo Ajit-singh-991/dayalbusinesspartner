@@ -5,10 +5,10 @@ import 'dart:developer';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dayalbusinesspartner/pages/product_details_page.dart';
+import 'package:dayalbusinesspartner/pages/summary_page.dart';
 import 'package:dayalbusinesspartner/widgets/color_constant.dart';
 import 'package:dayalbusinesspartner/widgets/size_utils.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-// import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -17,7 +17,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 class Dashboard extends StatefulWidget {
   final int id;
   final String userType;
-  const Dashboard({Key? key, required this.id, required this.userType}) : super(key: key);
+  const Dashboard({Key? key, required this.id, required this.userType})
+      : super(key: key);
 
   @override
   State<Dashboard> createState() => _DashboardState();
@@ -54,18 +55,17 @@ class _DashboardState extends State<Dashboard> {
     'Dec',
   ];
 
-
-void _changeMonth(int increment) {
-  setState(() {
-    _monthIndex += increment;
-    if (_monthIndex < 0) {
-      _monthIndex = 11;
-    } else if (_monthIndex > 11) {
-      _monthIndex = 0;
-    }
-  });
-  _fetchData();
-}
+  void _changeMonth(int increment) {
+    setState(() {
+      _monthIndex += increment;
+      if (_monthIndex < 0) {
+        _monthIndex = 11;
+      } else if (_monthIndex > 11) {
+        _monthIndex = 0;
+      }
+    });
+    _fetchData();
+  }
 
   Future<void> fetchledgerdata() async {
     const profileurl = 'http://66.94.34.21:8090/getLedger';
@@ -416,8 +416,8 @@ void _changeMonth(int increment) {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(
-                        height: 150,
-                        width: 200,
+                        height: 160,
+                        width: 180,
                         child: Card(
                           elevation: 3,
                           child: Column(
@@ -495,8 +495,8 @@ void _changeMonth(int increment) {
                         ),
                       ),
                       SizedBox(
-                        height: 150,
-                        width: 200,
+                        height: 160,
+                        width: 180,
                         child: Card(
                           elevation: 3,
                           child: Column(
@@ -555,8 +555,8 @@ void _changeMonth(int increment) {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(
-                        height: 150,
-                        width: 200,
+                        height: 160,
+                        width: 180,
                         child: Card(
                           elevation: 3,
                           child: Column(
@@ -598,7 +598,8 @@ void _changeMonth(int increment) {
                               ),
                               const SizedBox(height: 20),
                               _isLoading
-                                  ? const Center(child: CircularProgressIndicator())
+                                  ? const Center(
+                                      child: CircularProgressIndicator())
                                   : _buildTextWidget('Sale    ', _monthlySales),
                               _isLoading
                                   ? const SizedBox()
@@ -609,8 +610,8 @@ void _changeMonth(int increment) {
                         ),
                       ),
                       SizedBox(
-                        height: 150,
-                        width: 200,
+                        height: 160,
+                        width: 180,
                         child: Card(
                           elevation: 3,
                           child: Column(
@@ -639,11 +640,29 @@ void _changeMonth(int increment) {
                               ),
                               const SizedBox(height: 20),
                               _Loading
-                                  ? const Center(child:  CircularProgressIndicator())
+                                  ? const Center(
+                                      child: CircularProgressIndicator())
                                   : _buildTextWidget('Sale  ', _annualSales),
                               _Loading
                                   ? const SizedBox()
                                   : _buildTextWidget('Tar   ', _annualTarget),
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context)
+                                        .push(MaterialPageRoute(
+                                      builder: (context) => SummaryPage(
+                                        id: widget.id,
+                                        userType: widget.userType,
+                                      ),
+                                    ));
+                                  },
+                                  child: Text(
+                                    "Summary",
+                                    style: TextStyle(
+                                        color: ColorConstant.blue400,
+                                        fontFamily: "Inter",
+                                        fontSize: 14),
+                                  ))
                             ],
                           ),
                         ),
@@ -715,17 +734,19 @@ void _changeMonth(int increment) {
                                               color: Color(0xFFf4f4f4),
                                             ),
                                             child: GestureDetector(
-                                              onTap: (){
+                                              onTap: () {
                                                 Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      ProductDetailsPage(
-                                                    product: projectSnap
-                                                        .data![index], id: widget.id, userType: widget.userType,
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        ProductDetailsPage(
+                                                      product: projectSnap
+                                                          .data![index],
+                                                      id: widget.id,
+                                                      userType: widget.userType,
+                                                    ),
                                                   ),
-                                                ),
-                                              );
+                                                );
                                               },
                                               child: Image.network(projectSnap
                                                   .data![index]['image']
@@ -804,7 +825,9 @@ void _changeMonth(int increment) {
                                                   builder: (context) =>
                                                       ProductDetailsPage(
                                                     product: projectSnap
-                                                        .data![index],id: widget.id, userType: widget.userType,
+                                                        .data![index],
+                                                    id: widget.id,
+                                                    userType: widget.userType,
                                                   ),
                                                 ),
                                               );

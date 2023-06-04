@@ -14,7 +14,7 @@ class SummaryPage extends StatefulWidget {
       : super(key: key);
 
   @override
-  _SummaryPageState createState() => _SummaryPageState();
+  State<SummaryPage> createState() => _SummaryPageState();
 }
 
 class _SummaryPageState extends State<SummaryPage> {
@@ -23,8 +23,8 @@ class _SummaryPageState extends State<SummaryPage> {
   String district = '';
   String region = '';
   double lysSales = 0;
-  double cysSales = 0;
-  double cytTarget = 0;
+  int cysSales = 0;
+  int cytTarget = 0;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -38,7 +38,7 @@ class _SummaryPageState extends State<SummaryPage> {
       headers: {"Content-Type": "application/json"},
       body: json.encode(requestBody),
     );
-
+    log("=========${response.statusCode}+++++++++++++++");
     if (response.statusCode == 200) {
       final responseData = json.decode(response.body);
       setState(() {
@@ -72,7 +72,7 @@ class _SummaryPageState extends State<SummaryPage> {
       final districtFromResponse = firstItem['district'];
       final regionFromResponse = firstItem['region'];
 
-      fetchData();
+      // fetchData();
       setState(() {
         name = nameFromResponse;
         log("===============$name++++++++++");
@@ -91,7 +91,7 @@ class _SummaryPageState extends State<SummaryPage> {
   @override
   void initState() {
     super.initState();
-    // fetchData();
+    fetchData();
     fetchProfileData();
   }
 
@@ -186,7 +186,7 @@ class _SummaryPageState extends State<SummaryPage> {
                             child: Container(
                               decoration: BoxDecoration(border: Border.all()),
                               height: 50,
-                              child: Center(child: Text("CYS")),
+                              child: const Center(child: Text("CYS")),
                             ),
                           ),
                           TableCell(

@@ -1,10 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'package:dayalbusinesspartner/pages/dashboard.dart';
-import 'package:dayalbusinesspartner/pages/dealer_setails.dart';
+import 'package:dayalbusinesspartner/Supplier/supplier_home.dart';
 import 'package:dayalbusinesspartner/pages/drawer.dart';
-import 'package:dayalbusinesspartner/pages/orders.dart';
-import 'package:dayalbusinesspartner/pages/payment_details.dart';
 import 'package:dayalbusinesspartner/pages/schemes.dart';
 import 'package:dayalbusinesspartner/utils/app_decoration.dart';
 import 'package:dayalbusinesspartner/widgets/color_constant.dart';
@@ -13,17 +10,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
 
-class HomePage extends StatefulWidget {
+class DashHomePage extends StatefulWidget {
   final String userType;
   final int id;
-  const HomePage({Key? key, required this.userType, required this.id})
+  const DashHomePage({Key? key, required this.userType, required this.id})
       : super(key: key);
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<DashHomePage> createState() => _DashHomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _DashHomePageState extends State<DashHomePage> {
   int _selectedTab = 0;
   String name = '';
   String address = "";
@@ -68,14 +65,10 @@ class _HomePageState extends State<HomePage> {
 
   final List _pages = <Widget>[];
   void initializePages() {
-    _pages.add(Dashboard(id: widget.id,
-      userType: widget.userType,));
-    _pages.add(const Orders());
-    _pages.add(PaymentDetails(
+    _pages.add(SupplierHome(
       id: widget.id,
       userType: widget.userType,
     ));
-    _pages.add(DealerDetails(id: widget.id));
     _pages.add(const SchemesPage());
   }
 
@@ -172,36 +165,6 @@ class _HomePageState extends State<HomePage> {
             BottomNavigationBarItem(
                 icon: ColorFiltered(
                   colorFilter: _selectedTab == 1
-                      ? ColorFilter.mode(ColorConstant.red700, BlendMode.srcIn)
-                      : ColorFilter.mode(
-                          ColorConstant.gray600, BlendMode.srcIn),
-                  child: SvgPicture.asset("assets/images/Vector (2).svg",
-                      width: 350, height: 20, fit: BoxFit.fill),
-                ),
-                label: "About"),
-            BottomNavigationBarItem(
-                icon: ColorFiltered(
-                  colorFilter: _selectedTab == 2
-                      ? ColorFilter.mode(ColorConstant.red700, BlendMode.srcIn)
-                      : ColorFilter.mode(
-                          ColorConstant.gray600, BlendMode.srcIn),
-                  child: SvgPicture.asset("assets/images/Vector (5).svg",
-                      width: 350, height: 20, fit: BoxFit.fill),
-                ),
-                label: "Product"),
-            BottomNavigationBarItem(
-                icon: ColorFiltered(
-                  colorFilter: _selectedTab == 3
-                      ? ColorFilter.mode(ColorConstant.red700, BlendMode.srcIn)
-                      : ColorFilter.mode(
-                          ColorConstant.gray600, BlendMode.srcIn),
-                  child: SvgPicture.asset("assets/images/Vector (4).svg",
-                      width: 350, height: 20, fit: BoxFit.fill),
-                ),
-                label: "Contact"),
-            BottomNavigationBarItem(
-                icon: ColorFiltered(
-                  colorFilter: _selectedTab == 4
                       ? ColorFilter.mode(ColorConstant.red700, BlendMode.srcIn)
                       : ColorFilter.mode(
                           ColorConstant.gray600, BlendMode.srcIn),

@@ -3,7 +3,6 @@ import 'dart:developer';
 
 import 'package:dayalbusinesspartner/Supplier/dashboard_home.dart';
 import 'package:dayalbusinesspartner/pages/homepage.dart';
-import 'package:dayalbusinesspartner/pages/otherpage.dart'; // Import the other page
 import 'package:dayalbusinesspartner/utils/CustomTextStyle.dart';
 import 'package:dayalbusinesspartner/utils/customsnackbar.dart';
 import 'package:flutter/material.dart';

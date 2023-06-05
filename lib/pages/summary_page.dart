@@ -3,6 +3,8 @@ import 'dart:developer';
 
 import 'package:dayalbusinesspartner/pages/drawer.dart';
 import 'package:dayalbusinesspartner/widgets/color_constant.dart';
+import 'package:dayalbusinesspartner/widgets/size_utils.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -18,6 +20,7 @@ class SummaryPage extends StatefulWidget {
 }
 
 class _SummaryPageState extends State<SummaryPage> {
+  List<Map<String, dynamic>> monthlyData = [];
   String name = '';
   String address = '';
   String district = '';
@@ -41,12 +44,49 @@ class _SummaryPageState extends State<SummaryPage> {
     log("=========${response.statusCode}+++++++++++++++");
     if (response.statusCode == 200) {
       final responseData = json.decode(response.body);
-      setState(() {
-        lysSales = responseData['LYS']['sales'];
-        cysSales = responseData['CYS']['sales'];
-        cytTarget = responseData['CYT']['target'];
-      });
-      log("lysSales: $lysSales, cysSales: $cysSales, cytTarget: $cytTarget");
+
+      if (responseData['status'] == true) {
+        final cyData = responseData['CYT'][0] as Map<String, dynamic>;
+        final cysData = responseData['CYS'][0] as Map<String, dynamic>;
+        final lysData = responseData['LYS'][0] as Map<String, dynamic>;
+
+        lysSales = lysData['total_yearly'];
+        cysSales = cysData['total_yearly'];
+        cytTarget = cyData['total_yearly'];
+
+        List<String> months = [
+          'Apr',
+          'May',
+          'Jun',
+          'Jul',
+          'Aug',
+          'Sep',
+          'Oct',
+          'Nov',
+          'Dec',
+          'Jan',
+          'Feb',
+          'Mar'
+        ];
+
+        monthlyData = months.map((month) {
+          return {
+            'month': month,
+            'lysSales': lysData[month] ?? 0,
+            'cysSales': cysData[month] ?? 0,
+            'cytTarget': cyData[month] ?? 0,
+          };
+        }).toList();
+        monthlyData = months.map((month) {
+          return {
+            'month': month,
+            'lysSales': lysData[month] ?? 0,
+            'cysSales': cysData[month] ?? 0,
+            'cytTarget': cyData[month] ?? 0,
+          };
+        }).toList();
+        setState(() {});
+      }
     } else {
       throw Exception('Failed to fetch data');
     }
@@ -103,6 +143,7 @@ class _SummaryPageState extends State<SummaryPage> {
       resizeToAvoidBottomInset: false,
       body: Column(
         children: [
+          // Header
           Container(
             height: MediaQuery.of(context).size.height * 0.12,
             color: ColorConstant.red700,
@@ -110,9 +151,14 @@ class _SummaryPageState extends State<SummaryPage> {
               padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
               child: Row(
                 children: [
-                  Image.asset(
-                    "assets/images/dayalgroup.png",
-                  ),
+                  IconButton(
+                      onPressed: () {
+                        onTapArrowleft3(context);
+                      },
+                      icon: const Icon(
+                        CupertinoIcons.arrow_left,
+                        color: Colors.white,
+                      )),
                   const Spacer(),
                   Padding(
                     padding: const EdgeInsets.only(right: 16.0),
@@ -143,84 +189,140 @@ class _SummaryPageState extends State<SummaryPage> {
               ),
             ),
           ),
+          // Table
           Expanded(
             child: Container(
               color: Colors.white,
               child: Center(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Table(
+                  child: Column(
                     children: [
-                      TableRow(
-                        decoration: BoxDecoration(border: Border.all()),
-                        children: [
-                          TableCell(
-                            child: Container(
-                              height: 50,
-                            ),
-                          ),
-                          TableCell(
-                            child: Container(
-                              height: 50,
-                              child: const Center(child: Text("Summary")),
-                            ),
-                          ),
-                          TableCell(
-                            child: Container(
-                              height: 50,
-                            ),
-                          ),
-                        ],
+                      Padding(
+                        padding: getPadding(top: 10, bottom: 10),
+                        child: Center(
+                            child: Text(
+                          "Summary",
+                          style: TextStyle(
+                              color: ColorConstant.blueGray600,
+                              fontFamily: "Inter",
+                              fontSize: 24),
+                        )),
                       ),
-                      TableRow(
-                        decoration: BoxDecoration(border: Border.all()),
+                      Table(
                         children: [
-                          TableCell(
-                            child: Container(
-                              decoration: BoxDecoration(border: Border.all()),
-                              height: 50,
-                              child: const Center(child: Text("LYS")),
-                            ),
+                          // Header row
+                          TableRow(
+                            decoration: BoxDecoration(border: Border.all()),
+                            children: [
+                              TableCell(
+                                child: Container(height: 50),
+                              ),
+                              TableCell(
+                                child: Container(
+                                  height: 50,
+                                  child: const Center(child: Text("LYS")),
+                                ),
+                              ),
+                              TableCell(
+                                child: Container(
+                                  height: 50,
+                                  child: const Center(child: Text("CYS")),
+                                ),
+                              ),
+                              TableCell(
+                                child: Container(
+                                  height: 50,
+                                  child: const Center(child: Text("CYT")),
+                                ),
+                              ),
+                            ],
                           ),
-                          TableCell(
-                            child: Container(
+                          // Monthly data rows
+                          for (var data in monthlyData)
+                            TableRow(
                               decoration: BoxDecoration(border: Border.all()),
-                              height: 50,
-                              child: const Center(child: Text("CYS")),
+                              children: [
+                                TableCell(
+                                  child: Container(
+                                    decoration:
+                                        BoxDecoration(border: Border.all()),
+                                    height: 50,
+                                    child: Center(child: Text(data['month'])),
+                                  ),
+                                ),
+                                TableCell(
+                                  child: Container(
+                                    decoration:
+                                        BoxDecoration(border: Border.all()),
+                                    height: 50,
+                                    child: Center(
+                                        child:
+                                            Text(data['lysSales'].toString())),
+                                  ),
+                                ),
+                                TableCell(
+                                  child: Container(
+                                    decoration:
+                                        BoxDecoration(border: Border.all()),
+                                    height: 50,
+                                    child: Center(
+                                        child:
+                                            Text(data['cysSales'].toString())),
+                                  ),
+                                ),
+                                TableCell(
+                                  child: Container(
+                                    decoration:
+                                        BoxDecoration(border: Border.all()),
+                                    height: 50,
+                                    child: Center(
+                                        child:
+                                            Text(data['cytTarget'].toString())),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                          TableCell(
-                            child: Container(
-                              decoration: BoxDecoration(border: Border.all()),
-                              height: 50,
-                              child: const Center(child: Text("CYT")),
-                            ),
-                          ),
-                        ],
-                      ),
-                      TableRow(
-                        decoration: BoxDecoration(border: Border.all()),
-                        children: [
-                          TableCell(
-                            child: Container(
-                              decoration: BoxDecoration(border: Border.all()),
-                              height: 50,
-                              child: Center(child: Text("$lysSales")),
-                            ),
-                          ),
-                          TableCell(
-                            child: Container(
-                              decoration: BoxDecoration(border: Border.all()),
-                              height: 50,
-                              child: Center(child: Text("$cysSales")),
-                            ),
-                          ),
-                          TableCell(
-                            child: Container(
-                              decoration: BoxDecoration(border: Border.all()),
-                              height: 50,
-                              child: Center(child: Text("$cytTarget")),
-                            ),
+                          // Yearly data row
+                          TableRow(
+                            decoration: BoxDecoration(border: Border.all()),
+                            children: [
+                              TableCell(
+                                child: Container(
+                                  decoration:
+                                      BoxDecoration(border: Border.all()),
+                                  height: 50,
+                                  child: const Center(child: Text("Total")),
+                                ),
+                              ),
+                              TableCell(
+                                child: Container(
+                                  decoration:
+                                      BoxDecoration(border: Border.all()),
+                                  height: 50,
+                                  child:
+                                      Center(child: Text(lysSales.toString())),
+                                ),
+                              ),
+                              TableCell(
+                                child: Container(
+                                  decoration:
+                                      BoxDecoration(border: Border.all()),
+                                  height: 50,
+                                  child:
+                                      Center(child: Text(cysSales.toString())),
+                                ),
+                              ),
+                              TableCell(
+                                child: Container(
+                                  decoration:
+                                      BoxDecoration(border: Border.all()),
+                                  height: 50,
+                                  child:
+                                      Center(child: Text(cytTarget.toString())),
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
@@ -241,5 +343,9 @@ class _SummaryPageState extends State<SummaryPage> {
         ),
       ),
     );
+  }
+
+  onTapArrowleft3(BuildContext context) {
+    Navigator.pop(context);
   }
 }

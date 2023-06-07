@@ -68,9 +68,11 @@ class _HomePageState extends State<HomePage> {
 
   final List _pages = <Widget>[];
   void initializePages() {
-    _pages.add(Dashboard(id: widget.id,
-      userType: widget.userType,));
-    _pages.add(const Orders());
+    _pages.add(Dashboard(
+      id: widget.id,
+      userType: widget.userType,
+    ));
+    _pages.add(Orders(id: widget.id, userType: widget.userType));
     _pages.add(PaymentDetails(
       id: widget.id,
       userType: widget.userType,
@@ -178,7 +180,7 @@ class _HomePageState extends State<HomePage> {
                   child: SvgPicture.asset("assets/images/Vector (2).svg",
                       width: 350, height: 20, fit: BoxFit.fill),
                 ),
-                label: "About"),
+                label: "Orders"),
             BottomNavigationBarItem(
                 icon: ColorFiltered(
                   colorFilter: _selectedTab == 2

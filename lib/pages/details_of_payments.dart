@@ -108,7 +108,7 @@ class _DetailsPageState extends State<DetailsPage> {
             child: ClipRRect(
               child: Container(
                 height: MediaQuery.of(context).size.height * 0.8,
-                width: double.maxFinite,
+                width: MediaQuery.of(context).size.width,
                 // margin: getMargin(top: 12),
                 padding: getPadding(left: 0, top: 10, right: 0, bottom: 0),
                 decoration: AppDecoration.fillblueGray001
@@ -132,13 +132,13 @@ class _DetailsPageState extends State<DetailsPage> {
                       ),
                       Card(
                         color: ColorConstant.black90011,
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 5),
+                        // margin: const EdgeInsets.symmetric(
+                        //     horizontal: 20, vertical: 5),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15.0),
                         ),
                         child: Container(
-                          height: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height * 0.5,
                           width: MediaQuery.of(context).size.width,
                           decoration: BoxDecoration(
                             color: ColorConstant.whiteA700,
@@ -152,17 +152,14 @@ class _DetailsPageState extends State<DetailsPage> {
                           child: Column(
                             children: [
                               Padding(
-                                padding: const EdgeInsets.fromLTRB(
-                                    127, 28.0, 127, 20),
+                                padding: getPadding(top: 20),
                                 child: SvgPicture.asset(
                                     "assets/images/Vector.svg",
-                                    width: 300,
                                     height: 100,
                                     fit: BoxFit.fill),
                               ),
                               Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(100, 15, 100, 20),
+                                padding: getPadding(top: 10, bottom: 20),
                                 child: SvgPicture.asset(
                                     "assets/images/Payment done.svg",
                                     width: 300,
@@ -211,7 +208,9 @@ class _DetailsPageState extends State<DetailsPage> {
                                               width: 200,
                                               height: 7,
                                               fit: BoxFit.fill),
-                                              const SizedBox(width: 10,),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
                                           Text(
                                             "Payment Released",
                                             overflow: TextOverflow.ellipsis,
@@ -246,7 +245,9 @@ class _DetailsPageState extends State<DetailsPage> {
                                               width: 200,
                                               height: 7,
                                               fit: BoxFit.fill),
-                                              const SizedBox(width: 10,),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
                                           Text(
                                             'Paid via ${widget.payment['pay_mode']}',
                                             overflow: TextOverflow.ellipsis,

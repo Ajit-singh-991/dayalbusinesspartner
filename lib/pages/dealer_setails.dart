@@ -211,8 +211,8 @@ class _DealerDetailsState extends State<DealerDetails> {
                             width: 50,
                           ),
                           SizedBox(
-                            height: 50,
-                            width: 90,
+                            height: 30,
+                            width: 76,
                             child: ElevatedButton(
                               onPressed: () async {
                                 Uri url = Uri(
@@ -226,7 +226,7 @@ class _DealerDetailsState extends State<DealerDetails> {
                                 children: [
                                   SvgPicture.asset(
                                     "assets/images/Vector (8).svg",
-                                    height: 16,
+                                    height: 12,
                                     fit: BoxFit.fill,
                                   ),
                                   const SizedBox(
@@ -234,7 +234,7 @@ class _DealerDetailsState extends State<DealerDetails> {
                                   ),
                                   const Text(
                                     'Call',
-                                    style: TextStyle(fontSize: 20),
+                                    style: TextStyle(fontSize: 16),
                                   ),
                                 ],
                               ),

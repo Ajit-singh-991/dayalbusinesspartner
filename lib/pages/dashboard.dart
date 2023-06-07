@@ -215,12 +215,12 @@ class _DashboardState extends State<Dashboard> {
         child: Text(
           '$label: $value MT',
           maxLines: null,
-          overflow: TextOverflow.ellipsis,
+          // overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.left,
           style: const TextStyle(
               color: Colors.grey,
               fontWeight: FontWeight.w400,
-              fontSize: 18,
+              fontSize: 15,
               fontFamily: "Inter"),
         ),
       );
@@ -233,7 +233,7 @@ class _DashboardState extends State<Dashboard> {
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.left,
           style: const TextStyle(
-              color: Colors.grey, fontWeight: FontWeight.w400, fontSize: 18),
+              color: Colors.grey, fontWeight: FontWeight.w400, fontSize: 15),
         ),
       );
     }
@@ -438,7 +438,7 @@ class _DashboardState extends State<Dashboard> {
                                     'बही खाता',
                                     style: TextStyle(
                                       fontFamily: 'Baloo',
-                                      fontSize: 18,
+                                      fontSize: 16,
                                       color: Colors.white,
                                       height: 1,
                                     ),
@@ -459,7 +459,7 @@ class _DashboardState extends State<Dashboard> {
                                       color: Colors.grey,
                                       fontWeight: FontWeight.w400,
                                       fontFamily: "Inter",
-                                      fontSize: 18),
+                                      fontSize: 15),
                                 ),
                               ),
                               GestureDetector(
@@ -516,7 +516,7 @@ class _DashboardState extends State<Dashboard> {
                                     'डीलर संख्या',
                                     style: TextStyle(
                                       fontFamily: 'Baloo',
-                                      fontSize: 18,
+                                      fontSize: 16,
                                       color: Colors.white,
                                       height: 1,
                                     ),
@@ -538,7 +538,7 @@ class _DashboardState extends State<Dashboard> {
                                       color: Colors.grey,
                                       fontWeight: FontWeight.w400,
                                       fontFamily: "Baloo",
-                                      fontSize: 18),
+                                      fontSize: 15),
                                 ),
                               ),
                             ],
@@ -582,7 +582,7 @@ class _DashboardState extends State<Dashboard> {
                                     Text(
                                       _months[_monthIndex],
                                       style: const TextStyle(
-                                          fontSize: 20,
+                                          fontSize: 16,
                                           color: Colors.white,
                                           fontWeight: FontWeight.bold),
                                     ),
@@ -630,7 +630,7 @@ class _DashboardState extends State<Dashboard> {
                                     'Annual',
                                     style: TextStyle(
                                       fontFamily: 'Inter',
-                                      fontSize: 18,
+                                      fontSize: 16,
                                       color: Colors.white,
                                       height: 1,
                                     ),

@@ -1,9 +1,11 @@
+import 'package:dayalbusinesspartner/pages/enquiry_form.dart';
 import 'package:dayalbusinesspartner/widgets/color_constant.dart';
 import 'package:dayalbusinesspartner/widgets/size_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class SliderView extends StatefulWidget {
+  final String userType;
+  final int id;
   final String name;
   final String address;
   final String district;
@@ -13,7 +15,7 @@ class SliderView extends StatefulWidget {
       required this.name,
       required this.address,
       required this.district,
-      required this.region})
+      required this.region, required this.userType, required this.id})
       : super(key: key);
   @override
   State<SliderView> createState() => _SliderViewState();
@@ -118,7 +120,7 @@ class _SliderViewState extends State<SliderView> {
                     height: 10,
                   ),
                   Text(
-                    "1800-10-1000",
+                    "1800-2700-380",
                     style: TextStyle(
                         fontSize: 20,
                         color: ColorConstant.gray600,
@@ -132,8 +134,15 @@ class _SliderViewState extends State<SliderView> {
                     width: 100,
                     child: ElevatedButton(
                       onPressed: () async {
-                        Uri url = Uri(scheme: 'tel', path: "9554950170");
-                        await launchUrl(url);
+                        // Uri url = Uri(scheme: 'tel', path: "9554950170");
+                        // await launchUrl(url);
+                        Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        EnquiryForm(id: widget.id, userType: widget.userType,)
+                                                  ),
+                                                );
                       },
                       style: ElevatedButton.styleFrom(
                           shape: const StadiumBorder(),

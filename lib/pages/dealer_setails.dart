@@ -254,15 +254,15 @@ class _DealerDetailsState extends State<DealerDetails> {
       height: MediaQuery.of(context).size.height,
       child: Column(
         children: [
-          Align(
+           Align(
             alignment: Alignment.centerLeft,
             child: Padding(
-              padding: getPadding(left: 9, top: 20),
+              padding: getPadding(top: 38),
               child: Text(
-                "Cattle Feed : Distributor",
+                "My Dealers:",
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.left,
-                style: AppStyle.txtInterSemiBold2093,
+                style: AppStyle.txtInterBold24,
               ),
             ),
           ),
@@ -279,18 +279,7 @@ class _DealerDetailsState extends State<DealerDetails> {
               ),
             ),
           ),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Padding(
-              padding: getPadding(top: 38),
-              child: Text(
-                "My Dealers:",
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.left,
-                style: AppStyle.txtInterBold24,
-              ),
-            ),
-          ),
+         
           Expanded(
             child: ListView.builder(
               shrinkWrap: true,

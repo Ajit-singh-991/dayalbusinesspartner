@@ -218,7 +218,7 @@ class _HomePageState extends State<HomePage> {
             address: address,
             district: district,
             name: name,
-            region: region,
+            region: region, id: widget.id, userType: widget.userType,
           ),
         ),
       );

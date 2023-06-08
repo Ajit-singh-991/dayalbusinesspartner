@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:dayalbusinesspartner/utils/app_style.dart';
@@ -6,8 +7,6 @@ import 'package:dayalbusinesspartner/widgets/size_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
-
 import 'package:url_launcher/url_launcher.dart';
 
 class DealerDetails extends StatefulWidget {
@@ -33,38 +32,9 @@ class _DealerDetailsState extends State<DealerDetails> {
     fetchCountData();
   }
 
-  Future<void> initializeExpandedStates() async {
-    final dealersList = await fetchDealerDetails();
+  void initializeExpandedStates() {
     setState(() {
       _expandedStates = List<bool>.generate(dealersList.length, (_) => false);
-    });
-  }
-
-  Future<List<dynamic>> fetchDealerDetails() async {
-    final Map<String, dynamic> requestBody = {"id": widget.id};
-    final response = await http.post(
-      Uri.parse(apiUrl),
-      headers: {"Content-Type": "application/json"},
-      body: json.encode(requestBody),
-    );
-
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      final dealers = data['data'];
-      return dealers;
-    } else {
-      throw Exception('Failed to fetch dealer details');
-    }
-  }
-
-  void _toggleExpanded(int index) {
-    setState(() {
-      if (_expandedStates[index]) {
-        _expandedStates[index] = false;
-      } else {
-        _expandedStates = List<bool>.generate(dealersList.length, (_) => false);
-        _expandedStates[index] = true;
-      }
     });
   }
 
@@ -92,9 +62,37 @@ class _DealerDetailsState extends State<DealerDetails> {
         total = totalCount.toString();
         dayal = dayalCount.toString();
       });
+
+      await fetchDealerDetails();
     } else {
       throw Exception('Failed to fetch data');
     }
+  }
+
+  Future<void> fetchDealerDetails() async {
+    final Map<String, dynamic> requestBody = {"id": widget.id};
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      headers: {"Content-Type": "application/json"},
+      body: json.encode(requestBody),
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      final dealers = data['data'];
+      setState(() {
+        dealersList = dealers;
+        initializeExpandedStates();
+      });
+    } else {
+      throw Exception('Failed to fetch dealer details');
+    }
+  }
+
+  void _toggleExpanded(int index) {
+    setState(() {
+      _expandedStates[index] = !_expandedStates[index];
+    });
   }
 
   Widget _buildDealerCard(int index) {
@@ -197,8 +195,6 @@ class _DealerDetailsState extends State<DealerDetails> {
                             fontWeight: FontWeight.bold,
                             color: ColorConstant.gray600),
                       ),
-                      // const SizedBox(height: 10),
-                      // Text('Total Sales : ${dealer['contact_person']}'),
                       const SizedBox(height: 20),
                       Row(
                         children: [
@@ -296,25 +292,11 @@ class _DealerDetailsState extends State<DealerDetails> {
             ),
           ),
           Expanded(
-            child: FutureBuilder<List<dynamic>>(
-              future: fetchDealerDetails(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                } else if (snapshot.hasData) {
-                  dealersList = snapshot.data!;
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: dealersList.length,
-                    itemBuilder: (context, index) {
-                      return _buildDealerCard(index);
-                    },
-                  );
-                } else {
-                  return const SizedBox();
-                }
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: dealersList.length,
+              itemBuilder: (context, index) {
+                return _buildDealerCard(index);
               },
             ),
           ),

@@ -213,7 +213,9 @@ class _SummaryPageState extends State<SummaryPage> {
                         children: [
                           // Header row
                           TableRow(
-                            decoration: BoxDecoration(border: Border.all()),
+                            decoration: BoxDecoration(
+                                border: Border.all(),
+                                color: ColorConstant.red7000c),
                             children: [
                               TableCell(
                                 child: Container(height: 50),
@@ -227,13 +229,13 @@ class _SummaryPageState extends State<SummaryPage> {
                               TableCell(
                                 child: Container(
                                   height: 50,
-                                  child: const Center(child: Text("CYS")),
+                                  child: const Center(child: Text("CYT")),
                                 ),
                               ),
                               TableCell(
                                 child: Container(
                                   height: 50,
-                                  child: const Center(child: Text("CYT")),
+                                  child: const Center(child: Text("CYS")),
                                 ),
                               ),
                             ],
@@ -268,7 +270,7 @@ class _SummaryPageState extends State<SummaryPage> {
                                     height: 50,
                                     child: Center(
                                         child:
-                                            Text(data['cysSales'].toString())),
+                                            Text(data['cytTarget'].toString())),
                                   ),
                                 ),
                                 TableCell(
@@ -278,7 +280,7 @@ class _SummaryPageState extends State<SummaryPage> {
                                     height: 50,
                                     child: Center(
                                         child:
-                                            Text(data['cytTarget'].toString())),
+                                            Text(data['cysSales'].toString())),
                                   ),
                                 ),
                               ],
@@ -289,16 +291,18 @@ class _SummaryPageState extends State<SummaryPage> {
                             children: [
                               TableCell(
                                 child: Container(
-                                  decoration:
-                                      BoxDecoration(border: Border.all()),
+                                  decoration: BoxDecoration(
+                                      border: Border.all(),
+                                      color: ColorConstant.red7000c),
                                   height: 50,
                                   child: const Center(child: Text("Total")),
                                 ),
                               ),
                               TableCell(
                                 child: Container(
-                                  decoration:
-                                      BoxDecoration(border: Border.all()),
+                                  decoration: BoxDecoration(
+                                      border: Border.all(),
+                                      color: ColorConstant.red7000c),
                                   height: 50,
                                   child:
                                       Center(child: Text(lysSales.toString())),
@@ -306,20 +310,22 @@ class _SummaryPageState extends State<SummaryPage> {
                               ),
                               TableCell(
                                 child: Container(
-                                  decoration:
-                                      BoxDecoration(border: Border.all()),
+                                  decoration: BoxDecoration(
+                                      border: Border.all(),
+                                      color: ColorConstant.red7000c),
                                   height: 50,
                                   child:
-                                      Center(child: Text(cysSales.toString())),
+                                      Center(child: Text(cytTarget.toString())),
                                 ),
                               ),
                               TableCell(
                                 child: Container(
-                                  decoration:
-                                      BoxDecoration(border: Border.all()),
+                                  decoration: BoxDecoration(
+                                      border: Border.all(),
+                                      color: ColorConstant.red7000c),
                                   height: 50,
                                   child:
-                                      Center(child: Text(cytTarget.toString())),
+                                      Center(child: Text(cysSales.toString())),
                                 ),
                               ),
                             ],

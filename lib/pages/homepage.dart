@@ -180,7 +180,7 @@ class _HomePageState extends State<HomePage> {
                   child: SvgPicture.asset("assets/images/Vector (2).svg",
                       width: 350, height: 20, fit: BoxFit.fill),
                 ),
-                label: "Orders"),
+                label: "My Orders"),
             BottomNavigationBarItem(
                 icon: ColorFiltered(
                   colorFilter: _selectedTab == 2
@@ -200,7 +200,7 @@ class _HomePageState extends State<HomePage> {
                   child: SvgPicture.asset("assets/images/Vector (4).svg",
                       width: 350, height: 20, fit: BoxFit.fill),
                 ),
-                label: "Contact"),
+                label: "Dealers"),
             BottomNavigationBarItem(
                 icon: ColorFiltered(
                   colorFilter: _selectedTab == 4

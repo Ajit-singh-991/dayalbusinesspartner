@@ -138,7 +138,7 @@ class _DetailsPageState extends State<DetailsPage> {
                           borderRadius: BorderRadius.circular(15.0),
                         ),
                         child: Container(
-                          height: MediaQuery.of(context).size.height * 0.5,
+                          height: MediaQuery.of(context).size.height * 0.4,
                           width: MediaQuery.of(context).size.width,
                           decoration: BoxDecoration(
                             color: ColorConstant.whiteA700,
@@ -152,7 +152,7 @@ class _DetailsPageState extends State<DetailsPage> {
                           child: Column(
                             children: [
                               Padding(
-                                padding: getPadding(top: 20),
+                                padding: getPadding(top: 60),
                                 child: SvgPicture.asset(
                                     "assets/images/Vector.svg",
                                     height: 100,
@@ -191,78 +191,78 @@ class _DetailsPageState extends State<DetailsPage> {
                                       fontSize: 16),
                                 ),
                               ),
-                              Expanded(
-                                  child: Align(
-                                alignment: Alignment.topLeft,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  // crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          30, 5, 0, 0),
-                                      child: Row(
-                                        children: [
-                                          SvgPicture.asset(
-                                              "assets/images/Ellipse 4.svg",
-                                              width: 200,
-                                              height: 7,
-                                              fit: BoxFit.fill),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Text(
-                                            "Payment Released",
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                                color: ColorConstant.gray600,
-                                                fontWeight: FontWeight.w500,
-                                                fontFamily: 'Inter',
-                                                fontSize: 16),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Align(
-                                      alignment: Alignment.topLeft,
-                                      child: Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            30, 5, 0, 0),
-                                        child: SvgPicture.asset(
-                                            "assets/images/Line 13.svg",
-                                            width: 350,
-                                            height: 50,
-                                            fit: BoxFit.fill),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          30, 5, 0, 20),
-                                      child: Row(
-                                        children: [
-                                          SvgPicture.asset(
-                                              "assets/images/Ellipse 4.svg",
-                                              width: 200,
-                                              height: 7,
-                                              fit: BoxFit.fill),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Text(
-                                            'Paid via ${widget.payment['pay_mode']}',
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                                color: ColorConstant.gray600,
-                                                fontWeight: FontWeight.w500,
-                                                fontFamily: 'Inter',
-                                                fontSize: 16),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ))
+                              // Expanded(
+                              //     child: Align(
+                              //   alignment: Alignment.topLeft,
+                              //   child: Column(
+                              //     mainAxisAlignment: MainAxisAlignment.start,
+                              //     // crossAxisAlignment: CrossAxisAlignment.start,
+                              //     children: [
+                              //       Padding(
+                              //         padding: const EdgeInsets.fromLTRB(
+                              //             30, 5, 0, 0),
+                              //         child: Row(
+                              //           children: [
+                              //             SvgPicture.asset(
+                              //                 "assets/images/Ellipse 4.svg",
+                              //                 width: 200,
+                              //                 height: 7,
+                              //                 fit: BoxFit.fill),
+                              //             const SizedBox(
+                              //               width: 10,
+                              //             ),
+                              //             Text(
+                              //               "Payment Released",
+                              //               overflow: TextOverflow.ellipsis,
+                              //               style: TextStyle(
+                              //                   color: ColorConstant.gray600,
+                              //                   fontWeight: FontWeight.w500,
+                              //                   fontFamily: 'Inter',
+                              //                   fontSize: 16),
+                              //             ),
+                              //           ],
+                              //         ),
+                              //       ),
+                              //       Align(
+                              //         alignment: Alignment.topLeft,
+                              //         child: Padding(
+                              //           padding: const EdgeInsets.fromLTRB(
+                              //               30, 5, 0, 0),
+                              //           child: SvgPicture.asset(
+                              //               "assets/images/Line 13.svg",
+                              //               width: 350,
+                              //               height: 50,
+                              //               fit: BoxFit.fill),
+                              //         ),
+                              //       ),
+                              //       Padding(
+                              //         padding: const EdgeInsets.fromLTRB(
+                              //             30, 5, 0, 20),
+                              //         child: Row(
+                              //           children: [
+                              //             SvgPicture.asset(
+                              //                 "assets/images/Ellipse 4.svg",
+                              //                 width: 200,
+                              //                 height: 7,
+                              //                 fit: BoxFit.fill),
+                              //             const SizedBox(
+                              //               width: 10,
+                              //             ),
+                              //             Text(
+                              //               'Paid via ${widget.payment['pay_mode']}',
+                              //               overflow: TextOverflow.ellipsis,
+                              //               style: TextStyle(
+                              //                   color: ColorConstant.gray600,
+                              //                   fontWeight: FontWeight.w500,
+                              //                   fontFamily: 'Inter',
+                              //                   fontSize: 16),
+                              //             ),
+                              //           ],
+                              //         ),
+                              //       ),
+                              //     ],
+                              //   ),
+                              // ))
                             ],
                           ),
                         ),

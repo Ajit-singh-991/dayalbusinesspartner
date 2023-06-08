@@ -30,7 +30,8 @@ class AddPayDetailsIosPage extends StatefulWidget {
 }
 
 class _AddPayDetailsIosPageState extends State<AddPayDetailsIosPage> {
-  List<String> dropdownItemList = ["RTGS", "NEFT", "Cash"];
+  List<String> dropdownItemList = ["RTGS", "NEFT", "Cash","UPI","others"];
+  List<String> dropdownBankList = ["ICICI Bank", "State Bank Of India"];
   TextEditingController _bankController = TextEditingController();
 
   TextEditingController amountController = TextEditingController();
@@ -42,6 +43,7 @@ class _AddPayDetailsIosPageState extends State<AddPayDetailsIosPage> {
   String name = '';
   DateTime? selectedDate;
   String paidviac = "";
+  String bankName = "";
   String? selectedImageName;
   String pickedimagePath = "";
 
@@ -145,7 +147,7 @@ class _AddPayDetailsIosPageState extends State<AddPayDetailsIosPage> {
                         DateFormField(
                           focusNode: FocusNode(),
                           controller: _dateController,
-                          hintText: 'Select a date',
+                          hintText: '*Select a date',
                           margin: getMargin(top: 9),
                           context: context,
                         ),
@@ -153,12 +155,22 @@ class _AddPayDetailsIosPageState extends State<AddPayDetailsIosPage> {
                             focusNode: FocusNode(),
                             controller: amountController,
                             hintText: "*Amount",
+                            textInputType: TextInputType.number,
+                            textInputAction: TextInputAction.next,
                             margin: getMargin(top: 9)),
-                        CustomTextFormField(
+                        CustomDropDown(
                             focusNode: FocusNode(),
-                            controller: _bankController,
+                            icon: Container(
+                                margin: getMargin(left: 30, right: 37),
+                                child: CustomImageView(
+                                    svgPath:
+                                        ImageConstant.imgArrowdownGray400)),
                             hintText: "*Bank Name",
-                            margin: getMargin(top: 9)),
+                            items: dropdownBankList,
+                            margin: getMargin(top: 9),
+                            onChanged: (value) {
+                              bankName = value;
+                            }),
                         CustomDropDown(
                             focusNode: FocusNode(),
                             icon: Container(
@@ -281,7 +293,7 @@ class _AddPayDetailsIosPageState extends State<AddPayDetailsIosPage> {
     String payVia = paidviac;
     String image = pickedimagePath;
     String remark = remarksController.text;
-    String bank = _bankController.text;
+    String bank = bankName;
 
     updateData(payDate, amount, payVia, image, remark, bank);
     OneContext().hideCurrentSnackBar();

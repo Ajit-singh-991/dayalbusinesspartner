@@ -67,33 +67,42 @@ class _DashboardState extends State<Dashboard> {
     _fetchData();
   }
 
-  Future<void> fetchledgerdata() async {
-    const profileurl = 'http://66.94.34.21:8090/getLedger';
-    final requestBody = {
-      'id': widget.id,
-    };
-    final response = await http.post(Uri.parse(profileurl),
-        headers: {"Content-Type": "application/json"},
-        body: json.encode(requestBody));
-    if (response.statusCode == 200) {
-      final responseData = json.decode(response.body);
-      log('========= $responseData++++');
-      final data = responseData['data'] as List<dynamic>;
-      if (data.isNotEmpty) {
-        final firstItem = data.first;
-        final balanceFromResponse = firstItem['out_standing'];
-        setState(() {
-          ledger = balanceFromResponse.toString();
-        });
-      } else {
-        setState(() {
-          ledger = 'No data available';
-        });
-      }
+
+Future<void> fetchledgerdata() async {
+  const profileurl = 'http://66.94.34.21:8090/getLedger';
+  final requestBody = {'id': widget.id};
+  
+  final response = await http.post(
+    Uri.parse(profileurl),
+    headers: {"Content-Type": "application/json"},
+    body: json.encode(requestBody),
+  );
+  
+  if (response.statusCode == 200) {
+    final responseData = json.decode(response.body);
+    log('========= $responseData++++');
+    
+    final data = responseData['data'] as List<dynamic>;
+    
+    if (data.isNotEmpty) {
+      final firstItem = data.first;
+      final balanceFromResponse = firstItem['out_standing'];
+      
+      int roundedLedger = int.parse(balanceFromResponse.toString());
+      
+      setState(() {
+        ledger = roundedLedger.toString();
+      });
     } else {
-      throw Exception('Failed to fetch data');
+      setState(() {
+        ledger = 'No data available';
+      });
     }
+  } else {
+    throw Exception('Failed to fetch data');
   }
+}
+
 
   Future<void> fetchCountData() async {
     const profileUrl = 'http://66.94.34.21:8090/getDealerCounts';
@@ -220,7 +229,7 @@ class _DashboardState extends State<Dashboard> {
           style: const TextStyle(
               color: Colors.grey,
               fontWeight: FontWeight.w400,
-              fontSize: 15,
+              fontSize: 14,
               fontFamily: "Inter"),
         ),
       );
@@ -228,7 +237,7 @@ class _DashboardState extends State<Dashboard> {
       return Padding(
         padding: getPadding(left: 30),
         child: Text(
-          '$label: NA',
+          '$label: 0 MT',
           maxLines: null,
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.left,
@@ -600,11 +609,11 @@ class _DashboardState extends State<Dashboard> {
                               _isLoading
                                   ? const Center(
                                       child: CircularProgressIndicator())
-                                  : _buildTextWidget('Sale    ', _monthlySales),
+                                  : _buildTextWidget('Sale ', _monthlySales),
                               _isLoading
                                   ? const SizedBox()
                                   : _buildTextWidget(
-                                      'Tar      ', _monthlyTarget),
+                                      'Tar  ', _monthlyTarget),
                             ],
                           ),
                         ),
@@ -642,10 +651,10 @@ class _DashboardState extends State<Dashboard> {
                               _Loading
                                   ? const Center(
                                       child: CircularProgressIndicator())
-                                  : _buildTextWidget('Sale  ', _annualSales),
+                                  : _buildTextWidget('Sale ', _annualSales),
                               _Loading
                                   ? const SizedBox()
-                                  : _buildTextWidget('Tar   ', _annualTarget),
+                                  : _buildTextWidget('Tar  ', _annualTarget),
                               TextButton(
                                   onPressed: () {
                                     Navigator.of(context)

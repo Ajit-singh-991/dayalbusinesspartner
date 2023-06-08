@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dayalbusinesspartner/Supplier/dashboard_home.dart';
 import 'package:dayalbusinesspartner/pages/homepage.dart';
+import 'package:dayalbusinesspartner/pages/loginpage.dart';
 import 'package:dayalbusinesspartner/widgets/color_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -89,26 +90,12 @@ class SplashScreenState extends State<SplashScreen>
             );
           }
         } else {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const HomePage(
-                id: 17,
-                userType: "dealer",
-              ),
-            ),
-          );
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => const LoginPage()));
         }
       } else {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const HomePage(
-              id: 17,
-              userType: "dealer",
-            ),
-          ),
-        );
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => const LoginPage()));
       }
     });
   }

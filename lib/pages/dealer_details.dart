@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:dayalbusinesspartner/utils/app_style.dart';
@@ -7,6 +6,8 @@ import 'package:dayalbusinesspartner/widgets/size_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
+
 import 'package:url_launcher/url_launcher.dart';
 
 class DealerDetails extends StatefulWidget {
@@ -32,9 +33,38 @@ class _DealerDetailsState extends State<DealerDetails> {
     fetchCountData();
   }
 
-  void initializeExpandedStates() {
+  Future<void> initializeExpandedStates() async {
+    final dealersList = await fetchDealerDetails();
     setState(() {
       _expandedStates = List<bool>.generate(dealersList.length, (_) => false);
+    });
+  }
+
+  Future<List<dynamic>> fetchDealerDetails() async {
+    final Map<String, dynamic> requestBody = {"id": widget.id};
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      headers: {"Content-Type": "application/json"},
+      body: json.encode(requestBody),
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      final dealers = data['data'];
+      return dealers;
+    } else {
+      throw Exception('Failed to fetch dealer details');
+    }
+  }
+
+  void _toggleExpanded(int index) {
+    setState(() {
+      if (_expandedStates[index]) {
+        _expandedStates[index] = false;
+      } else {
+        _expandedStates = List<bool>.generate(dealersList.length, (_) => false);
+        _expandedStates[index] = true;
+      }
     });
   }
 
@@ -62,37 +92,9 @@ class _DealerDetailsState extends State<DealerDetails> {
         total = totalCount.toString();
         dayal = dayalCount.toString();
       });
-
-      await fetchDealerDetails();
     } else {
       throw Exception('Failed to fetch data');
     }
-  }
-
-  Future<void> fetchDealerDetails() async {
-    final Map<String, dynamic> requestBody = {"id": widget.id};
-    final response = await http.post(
-      Uri.parse(apiUrl),
-      headers: {"Content-Type": "application/json"},
-      body: json.encode(requestBody),
-    );
-
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      final dealers = data['data'];
-      setState(() {
-        dealersList = dealers;
-        initializeExpandedStates();
-      });
-    } else {
-      throw Exception('Failed to fetch dealer details');
-    }
-  }
-
-  void _toggleExpanded(int index) {
-    setState(() {
-      _expandedStates[index] = !_expandedStates[index];
-    });
   }
 
   Widget _buildDealerCard(int index) {
@@ -189,6 +191,8 @@ class _DealerDetailsState extends State<DealerDetails> {
                             fontWeight: FontWeight.bold,
                             color: ColorConstant.gray600),
                       ),
+                      // const SizedBox(height: 10),
+                      // Text('Total Sales : ${dealer['contact_person']}'),
                       const SizedBox(height: 20),
                       Row(
                         children: [
@@ -198,36 +202,32 @@ class _DealerDetailsState extends State<DealerDetails> {
                                   fontWeight: FontWeight.bold,
                                   color: ColorConstant.gray600)),
                           const SizedBox(
-                            width: 50,
+                            width: 30,
                           ),
-                          SizedBox(
-                            height: 30,
-                            width: 76,
-                            child: ElevatedButton(
-                              onPressed: () async {
-                                Uri url = Uri(
-                                    scheme: 'tel', path: dealer['contact_no']);
-                                await launchUrl(url);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                  backgroundColor: ColorConstant.red700,
-                                  shape: const StadiumBorder()),
-                              child: Row(
-                                children: [
-                                  SvgPicture.asset(
-                                    "assets/images/Vector (8).svg",
-                                    height: 12,
-                                    fit: BoxFit.fill,
-                                  ),
-                                  const SizedBox(
-                                    width: 5,
-                                  ),
-                                  const Text(
-                                    'Call',
-                                    style: TextStyle(fontSize: 16),
-                                  ),
-                                ],
-                              ),
+                          ElevatedButton(
+                            onPressed: () async {
+                              Uri url = Uri(
+                                  scheme: 'tel', path: dealer['contact_no']);
+                              await launchUrl(url);
+                            },
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: ColorConstant.red700,
+                                shape: const StadiumBorder()),
+                            child: Row(
+                              children: [
+                                SvgPicture.asset(
+                                  "assets/images/Vector (8).svg",
+                                  height: 16,
+                                  fit: BoxFit.fill,
+                                ),
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                const Text(
+                                  'Call',
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                              ],
                             ),
                           ),
                         ],
@@ -248,16 +248,15 @@ class _DealerDetailsState extends State<DealerDetails> {
       height: MediaQuery.of(context).size.height,
       child: Column(
         children: [
-           Align(
+          Align(
             alignment: Alignment.centerLeft,
-            child:  Padding(
-              padding: EdgeInsets.fromLTRB(30, 50, 20, 10),
+            child: Padding(
+              padding: getPadding(left: 9, top: 20),
               child: Text(
-                "My Dealers:",
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 28,
-                    fontWeight: FontWeight.w900),
+                "Cattle Feed : Distributor",
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.left,
+                style: AppStyle.txtInterSemiBold2093,
               ),
             ),
           ),
@@ -265,7 +264,7 @@ class _DealerDetailsState extends State<DealerDetails> {
             alignment: Alignment.centerLeft,
             child: Container(
               width: getHorizontalSize(168),
-              margin: getMargin(left: 30, top: 9),
+              margin: getMargin(left: 9, top: 9),
               child: Text(
                 "Total Dealer : $total\nTotal Dayal Dealer : $dayal",
                 maxLines: null,
@@ -274,13 +273,38 @@ class _DealerDetailsState extends State<DealerDetails> {
               ),
             ),
           ),
-         
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Padding(
+              padding: getPadding(top: 38),
+              child: Text(
+                "My Dealers:",
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.left,
+                style: AppStyle.txtInterBold24,
+              ),
+            ),
+          ),
           Expanded(
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: dealersList.length,
-              itemBuilder: (context, index) {
-                return _buildDealerCard(index);
+            child: FutureBuilder<List<dynamic>>(
+              future: fetchDealerDetails(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else if (snapshot.hasData) {
+                  dealersList = snapshot.data!;
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: dealersList.length,
+                    itemBuilder: (context, index) {
+                      return _buildDealerCard(index);
+                    },
+                  );
+                } else {
+                  return const SizedBox();
+                }
               },
             ),
           ),

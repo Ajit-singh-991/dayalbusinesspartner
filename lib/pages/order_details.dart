@@ -8,6 +8,7 @@ import 'package:dayalbusinesspartner/widgets/color_constant.dart';
 import 'package:dayalbusinesspartner/widgets/size_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart';
 import 'package:html_unescape/html_unescape.dart';
@@ -18,12 +19,14 @@ class OrderIosTwoScreen extends StatefulWidget {
   final int id;
   final int ordernum;
   final String orderdate;
+  final int orderid;
   const OrderIosTwoScreen(
       {super.key,
-      required this.userType,
-      required this.id,
-      required this.ordernum,
-      required this.orderdate});
+        required this.id,
+        required this.userType,
+        required this.orderdate,
+        required this.ordernum,
+      required this.orderid});
 
   @override
   State<OrderIosTwoScreen> createState() => _OrderIosTwoScreenState();
@@ -79,7 +82,7 @@ class _OrderIosTwoScreenState extends State<OrderIosTwoScreen> {
     final url = Uri.parse('http://66.94.34.21:8090/getOrderDetails');
     final requestBody = json.encode({
       'id': widget.id,
-      'orderId': widget.ordernum,
+      'orderId': widget.orderid,
     });
     final response = await http.post(
       url,
@@ -95,17 +98,16 @@ class _OrderIosTwoScreenState extends State<OrderIosTwoScreen> {
           final messages = decodedData['data']
               .map((item) => item['full_message'].toString())
               .toList();
-
-          final unescape = HtmlUnescape();
-          final parsedMessages = messages.map((message) {
-            final document = parse(message);
-            final plainText = parse(document.body!.text).documentElement!.text;
-            return unescape
-                .convert(plainText.replaceAll(RegExp(r'<[^>]+>'), ' '));
-          }).toList();
+          // final unescape = HtmlUnescape();
+          // final parsedMessages = messages.map((message) {
+          //   final document = parse(message);
+          //   final plainText = parse(document.body!.text).documentElement!.text;
+          //   return unescape
+          //       .convert(plainText.replaceAll(RegExp(r'<[^>]+>'), ' '));
+          // }).toList();
 
           setState(() {
-            fullMessages = parsedMessages;
+            fullMessages = messages;
             log("=======++++$fullMessages");
           });
           return;
@@ -260,10 +262,17 @@ class _OrderIosTwoScreenState extends State<OrderIosTwoScreen> {
                                       const SizedBox(
                                         height: 20,
                                       ),
-                                      Text(
-                                        fullMessages[index],
-                                        style:
-                                            const TextStyle(fontSize: 15.0),
+                                      // Text(
+                                      //   fullMessages[index],
+                                      //   style:
+                                      //       const TextStyle(fontSize: 15.0),
+                                      // ),
+                                      Center(
+                                        child: SingleChildScrollView(
+                                          child: Html(
+                                            data:fullMessages[0].toString()
+                                          ),
+                                        ),
                                       ),
                                       const SizedBox(
                                         height: 20,

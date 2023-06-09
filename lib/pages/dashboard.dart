@@ -9,6 +9,7 @@ import 'package:dayalbusinesspartner/pages/summary_page.dart';
 import 'package:dayalbusinesspartner/widgets/color_constant.dart';
 import 'package:dayalbusinesspartner/widgets/size_utils.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -27,7 +28,7 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   final CarouselController _controller = CarouselController();
   int _current = 0;
-  String ledger = '';
+  String ledger = '0';
   String total = '';
   String dayal = '';
   int _monthIndex = DateTime.now().month - 1;
@@ -67,42 +68,39 @@ class _DashboardState extends State<Dashboard> {
     _fetchData();
   }
 
+  Future<void> fetchledgerdata() async {
+    const profileurl = 'http://66.94.34.21:8090/getLedger';
+    final requestBody = {'id': widget.id};
 
-Future<void> fetchledgerdata() async {
-  const profileurl = 'http://66.94.34.21:8090/getLedger';
-  final requestBody = {'id': widget.id};
-  
-  final response = await http.post(
-    Uri.parse(profileurl),
-    headers: {"Content-Type": "application/json"},
-    body: json.encode(requestBody),
-  );
-  
-  if (response.statusCode == 200) {
-    final responseData = json.decode(response.body);
-    log('========= $responseData++++');
-    
-    final data = responseData['data'] as List<dynamic>;
-    
-    if (data.isNotEmpty) {
-      final firstItem = data.first;
-      final balanceFromResponse = firstItem['out_standing'];
-      
-      int roundedLedger = int.parse(balanceFromResponse.toString());
-      
-      setState(() {
-        ledger = roundedLedger.toString();
-      });
+    final response = await http.post(
+      Uri.parse(profileurl),
+      headers: {"Content-Type": "application/json"},
+      body: json.encode(requestBody),
+    );
+
+    if (response.statusCode == 200) {
+      final responseData = json.decode(response.body);
+      log('========= $responseData++++');
+
+      final data = responseData['data'] as List<dynamic>;
+
+      if (data.isNotEmpty) {
+        final firstItem = data.first;
+        final balanceFromResponse = firstItem['out_standing'];
+        var roundedLedger = balanceFromResponse.toStringAsFixed(0);
+        print("roundedLedger >>" + roundedLedger.toString());
+        setState(() {
+          ledger = roundedLedger.toString();
+        });
+      } else {
+        setState(() {
+          ledger = '0';
+        });
+      }
     } else {
-      setState(() {
-        ledger = 'No data available';
-      });
+      throw Exception('Failed to fetch data');
     }
-  } else {
-    throw Exception('Failed to fetch data');
   }
-}
-
 
   Future<void> fetchCountData() async {
     const profileUrl = 'http://66.94.34.21:8090/getDealerCounts';
@@ -116,7 +114,7 @@ Future<void> fetchledgerdata() async {
     );
     if (response.statusCode == 200) {
       final responseData = json.decode(response.body);
-      log('========= $responseData++++');
+
       final totalData = responseData['total'] as Map<String, dynamic>;
       final dayalData = responseData['dayal'] as Map<String, dynamic>;
 
@@ -220,7 +218,7 @@ Future<void> fetchledgerdata() async {
   Widget _buildTextWidget(String label, dynamic value) {
     if (value != null) {
       return Padding(
-        padding: getPadding(left: 30, right: 40),
+        padding: getPadding(left: 20, top: 5, right: 20),
         child: Text(
           '$label: $value MT',
           maxLines: null,
@@ -229,7 +227,7 @@ Future<void> fetchledgerdata() async {
           style: const TextStyle(
               color: Colors.grey,
               fontWeight: FontWeight.w400,
-              fontSize: 14,
+              fontSize: 16,
               fontFamily: "Inter"),
         ),
       );
@@ -268,7 +266,7 @@ Future<void> fetchledgerdata() async {
       if (data.isNotEmpty) {
         final userData = data.first;
         setState(() {
-          userName = userData['user_name'];
+          userName = userData['fullname'];
           contactNumber = userData['contact_no'];
         });
       } else {
@@ -448,6 +446,7 @@ Future<void> fetchledgerdata() async {
                                     style: TextStyle(
                                       fontFamily: 'Baloo',
                                       fontSize: 16,
+                                      fontWeight: FontWeight.bold,
                                       color: Colors.white,
                                       height: 1,
                                     ),
@@ -461,14 +460,14 @@ Future<void> fetchledgerdata() async {
                               Padding(
                                 padding: getPadding(left: 30),
                                 child: Text(
-                                  "$ledger Dr",
+                                  '₹ ${NumberFormat('##,##,###').format(int.parse(ledger))} Dr',
                                   overflow: TextOverflow.ellipsis,
                                   textAlign: TextAlign.left,
                                   style: const TextStyle(
                                       color: Colors.grey,
                                       fontWeight: FontWeight.w400,
                                       fontFamily: "Inter",
-                                      fontSize: 15),
+                                      fontSize: 16),
                                 ),
                               ),
                               GestureDetector(
@@ -526,6 +525,7 @@ Future<void> fetchledgerdata() async {
                                     style: TextStyle(
                                       fontFamily: 'Baloo',
                                       fontSize: 16,
+                                      fontWeight: FontWeight.bold,
                                       color: Colors.white,
                                       height: 1,
                                     ),
@@ -547,7 +547,7 @@ Future<void> fetchledgerdata() async {
                                       color: Colors.grey,
                                       fontWeight: FontWeight.w400,
                                       fontFamily: "Baloo",
-                                      fontSize: 15),
+                                      fontSize: 16),
                                 ),
                               ),
                             ],
@@ -605,15 +605,14 @@ Future<void> fetchledgerdata() async {
                                   ],
                                 ),
                               ),
-                              const SizedBox(height: 20),
+                              const SizedBox(height: 10),
                               _isLoading
                                   ? const Center(
                                       child: CircularProgressIndicator())
                                   : _buildTextWidget('Sale ', _monthlySales),
                               _isLoading
                                   ? const SizedBox()
-                                  : _buildTextWidget(
-                                      'Tar  ', _monthlyTarget),
+                                  : _buildTextWidget('Tar ', _monthlyTarget),
                             ],
                           ),
                         ),
@@ -640,6 +639,7 @@ Future<void> fetchledgerdata() async {
                                     style: TextStyle(
                                       fontFamily: 'Inter',
                                       fontSize: 16,
+                                      fontWeight: FontWeight.bold,
                                       color: Colors.white,
                                       height: 1,
                                     ),
@@ -647,14 +647,14 @@ Future<void> fetchledgerdata() async {
                                   ),
                                 ),
                               ),
-                              const SizedBox(height: 20),
+                              const SizedBox(height: 10),
                               _Loading
                                   ? const Center(
                                       child: CircularProgressIndicator())
                                   : _buildTextWidget('Sale ', _annualSales),
                               _Loading
                                   ? const SizedBox()
-                                  : _buildTextWidget('Tar  ', _annualTarget),
+                                  : _buildTextWidget('Tar ', _annualTarget),
                               TextButton(
                                   onPressed: () {
                                     Navigator.of(context)
@@ -911,7 +911,9 @@ Future<void> fetchledgerdata() async {
   Future<List<dynamic>> _fetchProducts() async {
     const url = 'http://66.94.34.21:9000/getAllProducts';
     //var state = await getValueFromLocalMemory("state");
-    Map data = {'state': 'Uttar Pradesh'};
+
+    Map data = {'state': 'Uttar Pradesh', 'category': ''};
+
     var body = json.encode(data);
     // Await the http get response, then decode the json-formatted response.
     var response = await http.post(Uri.parse(url),

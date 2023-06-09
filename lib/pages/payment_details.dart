@@ -76,9 +76,34 @@ class _PaymentDetailsState extends State<PaymentDetails> {
                     borderRadius: BorderRadius.circular(15.0),
                   ),
                   child: ListTile(
+                    leading:(payment['status'] == "C")
+                        ? SizedBox(
+                        height: 50.0,
+                        width: 50.0, // fixed width and height
+                        child: Image.asset("assets/images/done.png")
+                    )
+                        : (payment['status'] == "H")
+                        ? SizedBox(
+                        height: 40.0,
+                        width: 40.0, // fixed width and height
+                        child: Image.asset(("assets/images/hold.jpg"))
+                    )
+                        : (payment['status'] == "P")
+                        ? SizedBox(
+                        height: 40.0,
+                        width: 40.0, // fixed width and height
+                        child: Image.asset(("assets/images/pending.png"))
+                    )
+                        : (payment['status'] == "R")
+                        ? SizedBox(
+                        height: 40.0,
+                        width: 40.0, // fixed width and height
+                        child: Image.asset("assets/images/reject.jpg")
+                    )
+                        : Container(),
                     title: Text(
                       DateFormat('dd MMM yyyy')
-                          .format(DateTime.parse(payment['pay_date'])),
+                          .format(DateTime.parse(payment['pay_date']).toLocal()),
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                           color: ColorConstant.black900,
@@ -92,7 +117,7 @@ class _PaymentDetailsState extends State<PaymentDetails> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Text(
-                                '₹ ${payment['amount']}',
+                                '₹ ${NumberFormat('##,##,###').format(int.parse(payment['amount']))}',
                                 style: const TextStyle(
                                     color: Colors.black,
                                     fontSize: 16,
@@ -130,7 +155,7 @@ class _PaymentDetailsState extends State<PaymentDetails> {
 
           // const Spacer(),
           Padding(
-            padding: const EdgeInsets.fromLTRB(220, 10, 10, 30),
+            padding: const EdgeInsets.fromLTRB(200, 10, 10, 30),
             child: SizedBox(
               height: 50,
               width: 180,

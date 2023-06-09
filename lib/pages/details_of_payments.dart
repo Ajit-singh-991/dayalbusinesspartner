@@ -152,20 +152,96 @@ class _DetailsPageState extends State<DetailsPage> {
                           child: Column(
                             children: [
                               Padding(
-                                padding: getPadding(top: 60),
-                                child: SvgPicture.asset(
-                                    "assets/images/Vector.svg",
-                                    height: 100,
-                                    fit: BoxFit.fill),
+                                padding: getPadding(top: 30),
+                                child: (widget.payment['status'] == "C")
+                                    ? SizedBox(
+                                    height: 80.0,
+                                    width: 80.0, // fixed width and height
+                                    child: Image.asset("assets/images/done.png")
+                                )
+                                    : (widget.payment['status'] == "H")
+                                    ? SizedBox(
+                                    height: 80.0,
+                                    width: 80.0, // fixed width and height
+                                    child: Image.asset(("assets/images/hold.jpg"))
+                                )
+                                    : (widget.payment['status'] == "P")
+                                    ? SizedBox(
+                                    height: 80.0,
+                                    width: 80.0, // fixed width and height
+                                    child: Image.asset(("assets/images/pending.png"))
+                                )
+                                    : (widget.payment['status'] == "R")
+                                    ? SizedBox(
+                                    height: 80.0,
+                                    width: 80.0, // fixed width and height
+                                    child: Image.asset("assets/images/reject.jpg")
+                                )
+                                    : Container(),
                               ),
-                              Padding(
-                                padding: getPadding(top: 10, bottom: 20),
-                                child: SvgPicture.asset(
-                                    "assets/images/Payment done.svg",
-                                    width: 300,
-                                    height: 25,
-                                    fit: BoxFit.fill),
-                              ),
+
+                              (widget.payment['status'] == "C")
+                                  ? Padding(
+                                      padding: getPadding(top: 10, bottom: 20),
+                                      child: Text(
+                                        "Approved",
+                                        style: TextStyle(
+                                            color: Colors.green,
+                                            fontSize: 28,
+                                            fontWeight: FontWeight.w900),
+                                      ),
+                                    )
+                                  : (widget.payment['status'] == "H")
+                                      ? Padding(
+                                          padding:
+                                              getPadding(top: 10, bottom: 20),
+                                          child: Text(
+                                            "Hold",
+                                            style: TextStyle(
+                                                color: Colors.green,
+                                                fontSize: 28,
+                                                fontWeight: FontWeight.w900),
+                                          ),
+                                        )
+                                      : (widget.payment['status'] == "P")
+                                          ? Padding(
+                                              padding: getPadding(
+                                                  top: 10, bottom: 20),
+                                              child: Text(
+                                                "Pending",
+                                                style: TextStyle(
+                                                    color: Colors.green,
+                                                    fontSize: 28,
+                                                    fontWeight:
+                                                        FontWeight.w900),
+                                              ),
+                                            )
+                                          : (widget.payment['status'] == "R")
+                                              ? Padding(
+                                                  padding: getPadding(
+                                                      top: 10, bottom: 20),
+                                                  child: Text(
+                                                    "Reject",
+                                                    style: TextStyle(
+                                                        color: Colors.green,
+                                                        fontSize: 28,
+                                                        fontWeight:
+                                                            FontWeight.w900),
+                                                  ),
+                                                )
+                                              : Padding(
+                                                  padding: getPadding(
+                                                      top: 10, bottom: 20),
+                                                  child: Text(
+                                                    "",
+                                                    style: TextStyle(
+                                                        color: Colors.green,
+                                                        fontSize: 28,
+                                                        fontWeight:
+                                                            FontWeight.w900),
+                                                  ),
+                                                ),
+
                               Padding(
                                 padding: const EdgeInsets.all(0),
                                 child: Text(
@@ -182,7 +258,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                 child: Text(
                                   DateFormat('dd MMM yyyy').format(
                                       DateTime.parse(
-                                          widget.payment['pay_date'])),
+                                          widget.payment['pay_date']).toLocal()),
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
                                       color: ColorConstant.black900,

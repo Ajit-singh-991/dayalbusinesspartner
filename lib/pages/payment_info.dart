@@ -32,7 +32,6 @@ class AddPayDetailsIosPage extends StatefulWidget {
 class _AddPayDetailsIosPageState extends State<AddPayDetailsIosPage> {
   List<String> dropdownItemList = ["RTGS", "NEFT", "Cash","UPI","others"];
   List<String> dropdownBankList = ["ICICI Bank", "State Bank Of India"];
-  TextEditingController _bankController = TextEditingController();
 
   TextEditingController amountController = TextEditingController();
 

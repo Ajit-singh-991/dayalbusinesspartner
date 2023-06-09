@@ -10,8 +10,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:http/http.dart' as http;
-import 'package:html/parser.dart';
-import 'package:html_unescape/html_unescape.dart';
 import 'package:intl/intl.dart';
 
 class OrderIosTwoScreen extends StatefulWidget {

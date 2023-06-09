@@ -136,7 +136,7 @@ class _OrdersState extends State<Orders> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               SizedBox(
-                                height: 24,
+                                height: 25,
                                 width: 100,
                                 child: TextButton(
                                   onPressed: () {},
@@ -149,9 +149,9 @@ class _OrdersState extends State<Orders> {
                                             width: 1, color: Colors.red),
                                       ),
                                     ),
-                                    backgroundColor: MaterialStateProperty
-                                        .resolveWith<Color>(
-                                            (Set<MaterialState> states) {
+                                    backgroundColor:
+                                        MaterialStateProperty.resolveWith<
+                                            Color>((Set<MaterialState> states) {
                                       if (states
                                           .contains(MaterialState.pressed)) {
                                         return ColorConstant
@@ -160,7 +160,8 @@ class _OrdersState extends State<Orders> {
                                         return ColorConstant
                                             .green500; // Customize the color for status 'V'
                                       } else if (order['status'] == 'P') {
-                                        return ColorConstant.red7c; // Customize the color for status 'P'
+                                        return ColorConstant
+                                            .red7c; // Customize the color for status 'P'
                                       } else if (order['status'] == 'O') {
                                         return ColorConstant
                                             .green500; // Customize the color for status 'O'
@@ -184,142 +185,147 @@ class _OrdersState extends State<Orders> {
                                       // Customize the border color based on states and status
                                       if (states
                                           .contains(MaterialState.pressed)) {
-                                        return  BorderSide(
+                                        return BorderSide(
                                             width: 2,
                                             color: ColorConstant
-                                            .red7000c); // Customize the border when the button is pressed
+                                                .red7000c); // Customize the border when the button is pressed
                                       } else if (order['status'] == 'V') {
                                         return BorderSide(
                                             width: 2,
                                             color: ColorConstant
-                                            .green500); // Customize the border for status 'V'
+                                                .green500); // Customize the border for status 'V'
                                       } else if (order['status'] == 'P') {
-                                        return  BorderSide(
+                                        return BorderSide(
                                             width: 2,
-                                            color: ColorConstant.red7c); // Customize the border for status 'P'
+                                            color: ColorConstant
+                                                .red7c); // Customize the border for status 'P'
                                       } else if (order['status'] == 'O') {
-                                        return  BorderSide(
+                                        return BorderSide(
                                             width: 2,
                                             color: ColorConstant
-                                            .green500); // Customize the border for status 'O'
+                                                .green500); // Customize the border for status 'O'
                                       } else if (order['status'] == 'I') {
-                                        return  BorderSide(
+                                        return BorderSide(
                                             width: 2,
-                                            color:  ColorConstant
-                                            .blue7c); // Customize the border for status 'I'
+                                            color: ColorConstant
+                                                .blue7c); // Customize the border for status 'I'
                                       } else if (order['status'] == 'D') {
-                                        return  BorderSide(
+                                        return BorderSide(
                                             width: 2,
                                             color: ColorConstant
-                                            .green500); // Customize the border for status 'D'
+                                                .green500); // Customize the border for status 'D'
                                       } else if (order['status'] == 'A') {
-                                        return  BorderSide(
+                                        return BorderSide(
                                             width: 2,
                                             color: ColorConstant
-                                            .red7c); // Customize the border for status 'A'
+                                                .red7c); // Customize the border for status 'A'
                                       } else {
-                                        return  BorderSide(
+                                        return BorderSide(
                                             width: 2,
                                             color: ColorConstant
-                                            .red7c); // Default border for other statuses
+                                                .red7c); // Default border for other statuses
                                       }
                                     }),
                                   ),
-                                  child: (order['status'] == 'V')
-                                      ? const Text(
-                                          'Delivered',
-                                          style: TextStyle(
-                                            fontFamily: 'Arial',
-                                            fontSize: 11,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white,
-                                            height: 1,
-                                          ),
-                                          textAlign: TextAlign.left,
-                                        )
-                                      : (order['status'] == 'P')
-                                          ? const Text(
-                                              'Pending',
-                                              style: TextStyle(
-                                                fontFamily: 'Arial',
-                                                fontSize: 10,
-                                                color: Colors.white,
-                                                height: 1,
-                                              ),
-                                              textAlign: TextAlign.left,
-                                            )
-                                          : (order['status'] == 'O')
-                                              ? const Text(
-                                                  'Payment OK',
-                                                  style: TextStyle(
-                                                    fontFamily: 'Arial',
-                                                    fontSize: 10,
-                                                    color: Colors.white,
-                                                    height: 1,
-                                                  ),
-                                                  textAlign: TextAlign.left,
-                                                )
-                                              : (order['status'] == 'I')
-                                                  ? const Text(
-                                                      'Truck Arrange',
-                                                      style: TextStyle(
-                                                        fontFamily: 'Arial',
-                                                        fontSize: 10,
-                                                        color: Colors.white,
-                                                        height: 1,
-                                                      ),
-                                                      textAlign:
-                                                          TextAlign.left,
-                                                    )
-                                                  : (order['status'] == 'D')
-                                                      ? const Text(
-                                                          'Invoice Ready',
-                                                          style: TextStyle(
-                                                            fontFamily:
-                                                                'Arial',
-                                                            fontSize: 10,
-                                                            color:
-                                                                Colors.white,
-                                                            height: 1,
-                                                          ),
-                                                          textAlign:
-                                                              TextAlign.left,
-                                                        )
-                                                      : (order['status'] ==
-                                                              'A')
-                                                          ? const Text(
-                                                              'Approval Pending',
-                                                              style:
-                                                                  TextStyle(
-                                                                fontFamily:
-                                                                    'Arial',
-                                                                fontSize: 10,
-                                                                color: Colors
-                                                                    .white,
-                                                                height: 1,
-                                                              ),
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .left,
-                                                            )
-                                                          : const Text(
-                                                              'Cancelled',
-                                                              style:
-                                                                  TextStyle(
-                                                                fontFamily:
-                                                                    'Arial',
-                                                                fontSize: 10,
-                                                                color: Colors
-                                                                    .white,
-                                                                height: 1,
-                                                              ),
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .left,
+                                  child: Center(
+                                    child: (order['status'] == 'V')
+                                        ? const Text(
+                                            'Delivered',
+                                            style: TextStyle(
+                                              fontFamily: 'Arial',
+                                              fontSize: 11,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white,
+                                              height: 1,
+                                            ),
+                                            textAlign: TextAlign.left,
+                                          )
+                                        : (order['status'] == 'P')
+                                            ? const Text(
+                                                'Pending',
+                                                style: TextStyle(
+                                                  fontFamily: 'Arial',
+                                                  fontSize: 10,
+                                                  color: Colors.white,
+                                                  height: 1,
+                                                ),
+                                                textAlign: TextAlign.left,
+                                              )
+                                            : (order['status'] == 'O')
+                                                ? const Text(
+                                                    'Payment OK',
+                                                    style: TextStyle(
+                                                      fontFamily: 'Arial',
+                                                      fontSize: 10,
+                                                      color: Colors.white,
+                                                      height: 1,
+                                                    ),
+                                                    textAlign: TextAlign.left,
+                                                  )
+                                                : (order['status'] == 'I')
+                                                    ? const Text(
+                                                        'Truck Arrange',
+                                                        style: TextStyle(
+                                                          fontFamily: 'Arial',
+                                                          fontSize: 10,
+                                                          color: Colors.white,
+                                                          height: 1,
+                                                        ),
+                                                        textAlign:
+                                                            TextAlign.left,
+                                                      )
+                                                    : (order['status'] == 'D')
+                                                        ? const Text(
+                                                            'Invoice Ready',
+                                                            style: TextStyle(
+                                                              fontFamily:
+                                                                  'Arial',
+                                                              fontSize: 10,
+                                                              color:
+                                                                  Colors.white,
+                                                              height: 1,
                                                             ),
+                                                            textAlign:
+                                                                TextAlign.left,
+                                                          )
+                                                        : (order['status'] ==
+                                                                'A')
+                                                            ? const Text(
+                                                                'Approval Pending',
+                                                                style:
+                                                                    TextStyle(
+                                                                  fontFamily:
+                                                                      'Arial',
+                                                                  fontSize: 10,
+                                                                  color: Colors
+                                                                      .white,
+                                                                  height: 1,
+                                                                ),
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .left,
+                                                              )
+                                                            : const Text(
+                                                                'Cancelled',
+                                                                style:
+                                                                    TextStyle(
+                                                                  fontFamily:
+                                                                      'Arial',
+                                                                  fontSize: 10,
+                                                                  color: Colors
+                                                                      .white,
+                                                                  height: 1,
+                                                                ),
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .left,
+                                                              ),
+                                  ),
                                 ),
                               ),
-                              SizedBox(height: 4,),
+                              SizedBox(
+                                height: 4,
+                              ),
                               SizedBox(
                                 height: 24,
                                 width: 100,
@@ -329,12 +335,12 @@ class _OrdersState extends State<Orders> {
                                         MaterialPageRoute(
                                             builder: (context) =>
                                                 OrderIosTwoScreen(
-                                                  id: widget.id,
-                                                  userType: widget.userType,
-                                                  orderdate: order['msg_get_date'],
-                                                  ordernum: order['order_no'],
-                                                  orderid: order['id']
-                                                )));
+                                                    id: widget.id,
+                                                    userType: widget.userType,
+                                                    orderdate:
+                                                        order['msg_get_date'],
+                                                    ordernum: order['order_no'],
+                                                    orderid: order['id'])));
                                   },
                                   style: ButtonStyle(
                                     shape: MaterialStateProperty.all(

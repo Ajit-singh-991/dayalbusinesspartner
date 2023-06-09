@@ -1,16 +1,12 @@
-// ignore_for_file: must_be_immutable
-
 import 'dart:convert';
-import 'dart:developer';
+
 import 'package:dayalbusinesspartner/utils/app_decoration.dart';
 import 'package:dayalbusinesspartner/utils/app_style.dart';
 import 'package:dayalbusinesspartner/widgets/color_constant.dart';
 import 'package:dayalbusinesspartner/widgets/size_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:http/http.dart' as http;
-import 'package:intl/intl.dart';
 
 class OrderIosTwoScreen extends StatefulWidget {
   final String userType;
@@ -18,121 +14,87 @@ class OrderIosTwoScreen extends StatefulWidget {
   final int ordernum;
   final String orderdate;
   final int orderid;
-  const OrderIosTwoScreen(
-      {super.key,
-        required this.id,
-        required this.userType,
-        required this.orderdate,
-        required this.ordernum,
-      required this.orderid});
+  const OrderIosTwoScreen({
+    Key? key,
+    required this.id,
+    required this.userType,
+    required this.orderdate,
+    required this.ordernum,
+    required this.orderid,
+  }) : super(key: key);
 
   @override
   State<OrderIosTwoScreen> createState() => _OrderIosTwoScreenState();
 }
 
 class _OrderIosTwoScreenState extends State<OrderIosTwoScreen> {
-  TextEditingController group196Controller = TextEditingController();
-
-  TextEditingController group198Controller = TextEditingController();
-
-  GlobalKey<NavigatorState> navigatorKey = GlobalKey();
   String name = '';
-  List<dynamic> fullMessages = [];
+  Map<String, List<Map<String, dynamic>>> modifiedOrderDetails = {};
+  List<Map<String, dynamic>> schemeData = [];
 
-  // void fetchData() async {
-  //   final url = Uri.parse('http://66.94.34.21:8090/getOrderDetails');
-  //   final requestBody = json.encode({
-  //     'id': '17',
-  //     'orderId': '9454',
-  //   });
-  //   final response = await http.post(url,
-  //       headers: {"Content-Type": "application/json"}, body: requestBody);
+ void fetchData() async {
+  final url = Uri.parse('http://66.94.34.21:8090/getOrderDetails');
+  final requestBody = json.encode({
+    'id': widget.id.toString(),
+    'orderId': widget.orderid.toString(),
+  });
+  final response = await http.post(
+    url,
+    headers: {"Content-Type": "application/json"},
+    body: requestBody,
+  );
 
-  //   if (response.statusCode == 200) {
-  //     final responseBody = response.body;
-  //     if (responseBody.isNotEmpty) {
-  //       final decodedData = json.decode(responseBody);
-  //       if (decodedData['status'] == true) {
-  //         final messages = decodedData['data']
-  //             .map((item) => item['full_message'].toString())
-  //             .toList();
+  if (response.statusCode == 200) {
+    final responseBody = response.body;
+    if (responseBody.isNotEmpty) {
+      final decodedData = json.decode(responseBody);
 
-  //         final parsedMessages = messages.map((message) {
-  //           final document = parse(message);
-  //           return parse(document.body!.text).documentElement!.text;
-  //         }).toList();
-
-  //         setState(() {
-  //           fullMessages = parsedMessages;
-  //           log("=======++++$fullMessages");
-  //         });
-  //         return;
-  //       }
-  //     }
-  //   }
-
-  //   setState(() {
-  //     fullMessages = ['Failed to fetch data'];
-  //   });
-  // }
-
-  void fetchData() async {
-    final url = Uri.parse('http://66.94.34.21:8090/getOrderDetails');
-    final requestBody = json.encode({
-      'id': widget.id,
-      'orderId': widget.orderid,
-    });
-    final response = await http.post(
-      url,
-      headers: {"Content-Type": "application/json"},
-      body: requestBody,
-    );
-
-    if (response.statusCode == 200) {
-      final responseBody = response.body;
-      if (responseBody.isNotEmpty) {
-        final decodedData = json.decode(responseBody);
-        if (decodedData['status'] == true) {
-          final messages = decodedData['data']
-              .map((item) => item['full_message'].toString())
-              .toList();
-          // final unescape = HtmlUnescape();
-          // final parsedMessages = messages.map((message) {
-          //   final document = parse(message);
-          //   final plainText = parse(document.body!.text).documentElement!.text;
-          //   return unescape
-          //       .convert(plainText.replaceAll(RegExp(r'<[^>]+>'), ' '));
-          // }).toList();
-
-          setState(() {
-            fullMessages = messages;
-            log("=======++++$fullMessages");
-          });
-          return;
-        }
+      final orderData = decodedData['orderData'];
+      if (orderData != null && orderData is Map<String, dynamic>) {
+        modifiedOrderDetails = Map.fromEntries(orderData.entries.map((entry) {
+          final dealerName = entry.key;
+          final orderList = entry.value;
+          if (orderList is List) {
+            return MapEntry(
+                dealerName, orderList.cast<Map<String, dynamic>>());
+          }
+          return MapEntry(dealerName, []);
+        }));
       }
+
+      final schemeDataList = decodedData['schemeData'];
+      if (schemeDataList != null && schemeDataList is List) {
+        schemeData = schemeDataList.cast<Map<String, dynamic>>();
+      }
+
+      setState(() {
+        name = decodedData['name'] ?? '';
+      });
     }
   }
+}
 
   Future<void> fetchProfileData() async {
     const profileurl = 'http://66.94.34.21:8090/getProfile';
     final requestBody = {
       'usertype': widget.userType,
-      'id': widget.id,
+      'id': widget.id.toString(),
     };
-    final response = await http.post(Uri.parse(profileurl),
-        headers: {"Content-Type": "application/json"},
-        body: json.encode(requestBody));
+    final response = await http.post(
+      Uri.parse(profileurl),
+      headers: {"Content-Type": "application/json"},
+      body: json.encode(requestBody),
+    );
     if (response.statusCode == 200) {
       final responseData = json.decode(response.body);
-      log('========= $responseData++++');
       final data = responseData['data'] as List;
-      final firstItem = data.first;
-      final nameFromResponse = firstItem['name'];
-      setState(() {
-        name = nameFromResponse;
-        log("===============$name++++++++++");
-      });
+      if (data.isNotEmpty) {
+        final firstItem = data.first;
+        final nameFromResponse = firstItem['name'];
+        setState(() {
+          name = nameFromResponse;
+        });
+      }
     } else {
       throw Exception('Failed to fetch data');
     }
@@ -194,100 +156,44 @@ class _OrderIosTwoScreenState extends State<OrderIosTwoScreen> {
           ),
           Expanded(
             child: Container(
-              height: MediaQuery.of(context).size.height * 0.9,
-              width: double.maxFinite,
+              height: MediaQuery.of(context).size.height * 0.8,
+              width: MediaQuery.of(context).size.width,
               // margin: getMargin(top: 12),
-              padding: getPadding(left: 16, top: 25, right: 16, bottom: 0),
-              decoration: AppDecoration.outlineBlue200
+              padding: getPadding(left: 0, top: 10, right: 0, bottom: 0),
+              decoration: AppDecoration.fillblueGray001
                   .copyWith(borderRadius: BorderRadiusStyle.roundedBorder9),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                      padding: getPadding(
-                        top: 10,
-                      ),
+                      padding: getPadding(top: 30),
                       child: Text("Order Details:",
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.left,
                           style: AppStyle.txtInterBold24)),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.8,
-                    width: double.maxFinite,
-                    child: fullMessages.isNotEmpty
-                        ? ListView.builder(
-                            itemCount: fullMessages.length,
-                            itemBuilder: (context, index) {
-                              return Card(
-                                elevation: 5,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15.0),
-                                ),
-                                child: ListTile(
-                                  title: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: getPadding(top: 20),
-                                        child: Text(
-                                          "Order Date : ${DateFormat('dd MMM yyyy').format(DateTime.parse(widget.orderdate))}",
-                                          style: TextStyle(
-                                            fontFamily: 'Inter',
-                                            fontSize: 16,
-                                            color: ColorConstant.black900,
-                                            fontWeight: FontWeight.w400,
-                                            height: 1,
-                                          ),
-                                          textAlign: TextAlign.left,
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      Text(
-                                        "Order Number : ${widget.ordernum.toString()}",
-                                        style: TextStyle(
-                                          fontFamily: 'Inter',
-                                          fontSize: 16,
-                                          color: ColorConstant.black900,
-                                          fontWeight: FontWeight.w400,
-                                          height: 1,
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        height: 20,
-                                      ),
-                                      // Text(
-                                      //   fullMessages[index],
-                                      //   style:
-                                      //       const TextStyle(fontSize: 15.0),
-                                      // ),
-                                      Center(
-                                        child: SingleChildScrollView(
-                                          child: Html(
-                                            data:fullMessages[0].toString()
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        height: 20,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            },
-                          )
-                        : const Center(
-                            child: Text(
-                              'No data available',
-                              style: TextStyle(
-                                  fontSize: 18.0, color: Colors.white),
-                            ),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: modifiedOrderDetails.length,
+                      itemBuilder: (context, index) {
+                        final dealerName =
+                            modifiedOrderDetails.keys.elementAt(index);
+                        final orderData =
+                            modifiedOrderDetails[dealerName] ?? [];
+                        return Padding(
+                          padding: getPadding(
+                            left: 20,
+                            right: 20,
                           ),
+                          child: OrderCard(
+                            dealerName: dealerName,
+                            orderData: orderData,
+                            orderid: widget.orderid,
+                            schemeData: schemeData,
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ],
               ),
@@ -300,5 +206,189 @@ class _OrderIosTwoScreenState extends State<OrderIosTwoScreen> {
 
   onTapArrowleft3(BuildContext context) {
     Navigator.pop(context);
+  }
+}
+
+class OrderCard extends StatelessWidget {
+  final String dealerName;
+  final List<Map<String, dynamic>> orderData;
+  final int orderid;
+  final List<Map<String, dynamic>> schemeData;
+  const OrderCard(
+      {super.key,
+      required this.dealerName,
+      required this.orderData,
+      required this.orderid,
+      required this.schemeData});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: getMargin(top: 6),
+      padding: getPadding(left: 20, top: 16, right: 20, bottom: 16),
+      decoration: AppDecoration.fillWhiteA700
+          .copyWith(borderRadius: BorderRadiusStyle.roundedBorder8),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                  width: getHorizontalSize(81),
+                  margin: getMargin(bottom: 1),
+                  child: Text("Order Number",
+                      maxLines: null,
+                      textAlign: TextAlign.left,
+                      style: AppStyle.txtInterRegular12Bluegray900)),
+              Container(
+                  width: getHorizontalSize(64),
+                  margin: getMargin(bottom: 1),
+                  child: Text(orderid.toString(),
+                      maxLines: null,
+                      textAlign: TextAlign.left,
+                      style: AppStyle.txtInterRegular12Bluegray900)),
+            ],
+          ),
+          Container(
+            padding: getPadding(all: 2),
+            decoration: AppDecoration.outlineGray400
+                .copyWith(borderRadius: BorderRadiusStyle.roundedBorder8),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Container(
+                  width: double.maxFinite,
+                  child: Container(
+                      width: getHorizontalSize(326),
+                      padding:
+                          getPadding(left: 14, top: 6, right: 14, bottom: 6),
+                      decoration: AppDecoration.fillRed7000c.copyWith(
+                          borderRadius: BorderRadiusStyle.roundedBorder8),
+                      child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            RichText(
+                                text: TextSpan(children: [
+                                  TextSpan(
+                                      text: "$dealerName ",
+                                      style: TextStyle(
+                                          color: ColorConstant.blueGray900,
+                                          fontSize:
+                                              getFontSize(14.700000762939453),
+                                          fontFamily: 'Inter',
+                                          fontWeight: FontWeight.w600)),
+                                  TextSpan(
+                                      text: "( Dealer )",
+                                      style: TextStyle(
+                                          color: ColorConstant.blueGray900,
+                                          fontSize:
+                                              getFontSize(12.250000953674316),
+                                          fontFamily: 'Inter',
+                                          fontWeight: FontWeight.w400))
+                                ]),
+                                textAlign: TextAlign.left)
+                          ])),
+                ),
+                Padding(
+                    padding: getPadding(left: 21, top: 9),
+                    child: Text("Products",
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.left,
+                        style: AppStyle.txtInterMedium12)),
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: orderData.length,
+                  itemBuilder: (context, index) {
+                    final product = orderData[index];
+                    return Column(
+                      children: [
+                        Padding(
+                            padding: getPadding(left: 34, top: 11),
+                            child: Row(children: [
+                              Text(product['product_name'],
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.left,
+                                  style: AppStyle.txtInterMedium12Bluegray900),
+                              Padding(
+                                  padding: getPadding(left: 11, top: 1),
+                                  child: Text(product['packing'].toString(),
+                                      overflow: TextOverflow.ellipsis,
+                                      textAlign: TextAlign.left,
+                                      style: AppStyle.txtInterRegular10)),
+                              const Spacer(),
+                              Padding(
+                                padding: getPadding(right: 20),
+                                child: Text(" ${product['qty_in_bags']} bags",
+                                    overflow: TextOverflow.ellipsis,
+                                    textAlign: TextAlign.left,
+                                    style: AppStyle.txtInterRegular10),
+                              ),
+                            ])),
+                        Align(
+                            alignment: Alignment.centerRight,
+                            child: Padding(
+                                padding: getPadding(top: 9),
+                                child: Divider(
+                                    height: getVerticalSize(1),
+                                    thickness: getVerticalSize(1),
+                                    color: ColorConstant.gray400,
+                                    indent: getHorizontalSize(30),
+                                    endIndent: getHorizontalSize(11)))),
+                      ],
+                    );
+                  },
+                ),
+                Padding(
+                    padding: getPadding(left: 21, top: 17),
+                    child: Text("Scheme",
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.left,
+                        style: AppStyle.txtInterMedium12)),
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: orderData.length,
+                  itemBuilder: (context, index) {
+                    final product = orderData[index];
+                    final schemeId = product['scheme_id'];
+                    final scheme = schemeData.firstWhere(
+                        (scheme) => scheme['scheme_id'] == schemeId,
+                        orElse: () => {});
+                    final schemeName =
+                        scheme != null ? scheme['scheme_name'] : 'No Scheme';
+                    final discount = scheme != null ? scheme['discount'] : 0;
+                    return Column(
+                      children: [
+                        // Padding(
+                        //     padding: getPadding(left: 34, top: 11),
+                        //     child: Row(children: [
+                        //       Text(schemeName,
+                        //           overflow: TextOverflow.ellipsis,
+                        //           textAlign: TextAlign.left,
+                        //           style: AppStyle.txtInterMedium12Bluegray900),
+                        //       const Spacer(),
+                        //       Text(discount.toString(),
+                        //           overflow: TextOverflow.ellipsis,
+                        //           textAlign: TextAlign.left,
+                        //           style: AppStyle.txtInterRegular10),
+                        //     ])),
+                      ],
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

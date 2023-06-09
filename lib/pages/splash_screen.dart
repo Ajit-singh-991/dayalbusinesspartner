@@ -90,12 +90,30 @@ class SplashScreenState extends State<SplashScreen>
             );
           }
         } else {
-          Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => const LoginPage()));
+          // Navigator.pushReplacement(context,
+          //     MaterialPageRoute(builder: (context) => const LoginPage()));
+           Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomePage(
+                  id: 200,
+                  userType: 'distributor',
+                ),
+              ),
+            );
         }
       } else {
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => const LoginPage()));
+        // Navigator.pushReplacement(context,
+        //     MaterialPageRoute(builder: (context) => const LoginPage()));
+         Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomePage(
+                  id: 200,
+                  userType: 'distributor',
+                ),
+              ),
+            );
       }
     });
   }

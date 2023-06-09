@@ -134,7 +134,6 @@ class _DealerDetailsState extends State<DealerDetails> {
                     padding: const EdgeInsets.fromLTRB(10, 10, 30, 0),
                     child: SvgPicture.asset(
                       "assets/images/Vector (6).svg",
-                      width: 350,
                       height: 20,
                       fit: BoxFit.fill,
                     ),

@@ -97,7 +97,8 @@ class _DealerDetailsState extends State<DealerDetails> {
 
   Widget _buildDealerCard(int index) {
     final dealer = dealersList[index];
-
+    print('========${dealer['dealer_pic']}');
+    // final dealerPic = dealer[0]['dealer_pic'];
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
       shape: RoundedRectangleBorder(
@@ -114,12 +115,13 @@ class _DealerDetailsState extends State<DealerDetails> {
             children: [
               if (!_expandedStates[index])
                 ListTile(
-                  leading: const Padding(
-                    padding: EdgeInsets.fromLTRB(10, 10, 30, 0),
+                  leading:  Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 10, 30, 0),
                     child: CircleAvatar(
                       radius: 24.0,
-                      backgroundImage: NetworkImage(
-                          'https://cdn.pixabay.com/photo/2018/08/28/12/41/avatar-3637425_1280.png'),
+                      backgroundImage: (dealer['dealer_pic'] == '')? const NetworkImage(
+                          'https://cdn.pixabay.com/photo/2018/08/28/12/41/avatar-3637425_1280.png'):NetworkImage(
+                                  'https://dayalsoftware.com/upload/dealer/${dealer['dealer_pic']}'),
                       backgroundColor: Colors.white,
                     ),
                   ),
@@ -149,10 +151,11 @@ class _DealerDetailsState extends State<DealerDetails> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const CircleAvatar(
+                            CircleAvatar(
                               radius: 50.0,
-                              backgroundImage: NetworkImage(
-                                  'https://cdn.pixabay.com/photo/2018/08/28/12/41/avatar-3637425_1280.png'),
+                              backgroundImage: (dealer['dealer_pic'] == '')? const NetworkImage(
+                          'https://cdn.pixabay.com/photo/2018/08/28/12/41/avatar-3637425_1280.png'):NetworkImage(
+                                  'https://dayalsoftware.com/upload/dealer/${dealer['dealer_pic']}'),
                               backgroundColor: Colors.white,
                             ),
                             const SizedBox(
@@ -248,9 +251,9 @@ class _DealerDetailsState extends State<DealerDetails> {
       height: MediaQuery.of(context).size.height,
       child: Column(
         children: [
-           Align(
+          const Align(
             alignment: Alignment.centerLeft,
-            child:  Padding(
+            child: Padding(
               padding: EdgeInsets.fromLTRB(30, 50, 20, 10),
               child: Text(
                 "My Dealers:",
@@ -274,7 +277,6 @@ class _DealerDetailsState extends State<DealerDetails> {
               ),
             ),
           ),
-         
           Expanded(
             child: ListView.builder(
               shrinkWrap: true,

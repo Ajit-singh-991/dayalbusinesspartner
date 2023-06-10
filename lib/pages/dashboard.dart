@@ -806,7 +806,7 @@ class _DashboardState extends State<Dashboard> {
                     child: ConstrainedBox(
                         constraints: const BoxConstraints(maxHeight: 150),
                         child: FutureBuilder(
-                            future: _fetchProducts(),
+                            future: _fetchProductsfeeds(),
                             builder: (context,
                                 AsyncSnapshot<List<dynamic>> projectSnap) {
                               if (projectSnap.data == null) {
@@ -909,10 +909,10 @@ class _DashboardState extends State<Dashboard> {
   }
 
   Future<List<dynamic>> _fetchProducts() async {
-    const url = 'http://66.94.34.21:9000/getAllProducts';
+    const url = 'http://66.94.34.21:9000/getFilterProducts';
     //var state = await getValueFromLocalMemory("state");
 
-    Map data = {'state': 'Uttar Pradesh', 'category': ''};
+    Map data = {'state': 'Uttar Pradesh', 'category': 1};
 
     var body = json.encode(data);
     // Await the http get response, then decode the json-formatted response.
@@ -927,6 +927,30 @@ class _DashboardState extends State<Dashboard> {
   }
 
   Future<String> getValueFromLocalMemory(String key) async {
+    var pref = await SharedPreferences.getInstance();
+    var value = pref.getString(key) ?? "";
+    return value;
+  }
+
+    Future<List<dynamic>> _fetchProductsfeeds() async {
+    const url = 'http://66.94.34.21:9000/getFilterProducts';
+    //var state = await getValueFromLocalMemory("state");
+
+    Map data = {'state': 'Uttar Pradesh', 'category': 4};
+
+    var body = json.encode(data);
+    // Await the http get response, then decode the json-formatted response.
+    var response = await http.post(Uri.parse(url),
+        headers: {"Content-Type": "application/json"}, body: body);
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body)['data'];
+      return jsonResponse;
+    } else {
+      throw Exception('Failed to load jobs from API');
+    }
+  }
+
+  Future<String> getValueFromLocalMemoryfeeds(String key) async {
     var pref = await SharedPreferences.getInstance();
     var value = pref.getString(key) ?? "";
     return value;

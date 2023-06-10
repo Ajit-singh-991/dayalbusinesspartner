@@ -157,11 +157,12 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                     onPressed: () {
                                       setState(() {
                                         firstButtonSelected = true;
-                                        secondButtonSelected = false;
+                                        // secondButtonSelected = false;
                                       });
                                     },
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: firstButtonSelected
+                                      backgroundColor: 
+                                      firstButtonSelected
                                           ? ColorConstant.red70000c
                                           : ColorConstant.gray100,
                                       shape: RoundedRectangleBorder(
@@ -202,57 +203,63 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                   ),
                                 ),
                               ),
-                              SizedBox(
-                                height: 70,
-                                width: 150,
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      firstButtonSelected = false;
-                                      secondButtonSelected = true;
-                                    });
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: secondButtonSelected
-                                        ? ColorConstant.red70000c
-                                        : ColorConstant.gray100,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(
-                                            12), // <-- Radius
-                                        side: BorderSide(
-                                            color: secondButtonSelected
-                                                ? ColorConstant.red700
-                                                : ColorConstant.gray400)),
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: getPadding(
-                                          top: 15,
-                                          bottom: 0,
-                                        ),
-                                        child: Text(
-                                          "पैकिंग: ${widget.product['packing'].toString()}",
-                                          style: TextStyle(
-                                              color: ColorConstant.gray300,
-                                              fontFamily: "Baloo"),
-                                        ),
-                                      ),
-                                      Text(
-                                        "MRP: ₹${widget.product['price'].toString()}",
-                                        style: TextStyle(
-                                            color: secondButtonSelected
-                                                ? ColorConstant.black900
-                                                : ColorConstant.gray300,
-                                            fontFamily: "Inter",
-                                            fontSize: 20),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
+                              // SizedBox(
+                              //   height: 70,
+                              //   width: 150,
+                              //   child: ElevatedButton(
+                              //     onPressed: () {
+                              //       setState(() {
+                              //         firstButtonSelected = false;
+                              //         secondButtonSelected = true;
+                              //       });
+                              //     },
+                              //     style: ElevatedButton.styleFrom(
+                              //       backgroundColor: ColorConstant.red70000c,
+                                    
+                              //       // secondButtonSelected
+                              //       //     ? ColorConstant.red70000c
+                              //       //     : ColorConstant.gray100,
+                              //       shape: RoundedRectangleBorder(
+                              //           borderRadius: BorderRadius.circular(
+                              //               12), // <-- Radius
+                              //           side: BorderSide(
+                              //               color: ColorConstant.red700
+                                            
+                              //               // secondButtonSelected
+                              //               //     ? ColorConstant.red700
+                              //               //     : ColorConstant.gray400
+                              //                   )),
+                              //     ),
+                              //     child: Column(
+                              //       crossAxisAlignment:
+                              //           CrossAxisAlignment.start,
+                              //       children: [
+                              //         Padding(
+                              //           padding: getPadding(
+                              //             top: 15,
+                              //             bottom: 0,
+                              //           ),
+                              //           child: Text(
+                              //             "पैकिंग: ${widget.product['packing'].toString()}",
+                              //             style: TextStyle(
+                              //                 color: ColorConstant.gray300,
+                              //                 fontFamily: "Baloo"),
+                              //           ),
+                              //         ),
+                              //         Text(
+                              //           "MRP: ₹${widget.product['price'].toString()}",
+                              //           style: TextStyle(
+                              //               color: secondButtonSelected
+                              //                   ? ColorConstant.black900
+                              //                   : ColorConstant.gray300,
+                              //               fontFamily: "Inter",
+                              //               fontSize: 20),
+                              //         ),
+                              //       ],
+                              //     ),
+                              //   ),
+                              // ),
+                           
                             ],
                           ),
                           const SizedBox(height: 20),
@@ -269,6 +276,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                 color: ColorConstant.gray300,
                                 fontFamily: "Baloo"),
                           ),
+                          const SizedBox(height: 200,)
                         ],
                       ),
                     ),

@@ -9,7 +9,7 @@ class ImageConstant {
 
   // static String imgLivertonic1 = 'assets/images/img_livertonic1.png';
 
-  // static String imgDayalanmolsuper = 'assets/images/img_dayalanmolsuper.png';
+  static String imgDayalanmolsuper = 'assets/images/img_dayalanmolsuper.png';
 
   // static String imgBatissa1 = 'assets/images/img_batissa1.png';
 
@@ -29,7 +29,7 @@ class ImageConstant {
 
   // static String imgArrowup = 'assets/images/img_arrowup.svg';
 
-  // static String imgVectorGray600 = 'assets/images/img_vector_gray_600.svg';
+  static String imgVectorGray600 = 'assets/images/img_vector_gray_600.svg';
 
   // static String imgVectorWhiteA700 = 'assets/images/img_vector_white_a700.svg';
 
@@ -45,8 +45,8 @@ class ImageConstant {
   // static String imgUnsplashwnolnjo7ts884x84 =
   //     'assets/images/img_unsplashwnolnjo7ts8_84x84.png';
 
-  // static String imgArrowdownBlueGray900 =
-  //     'assets/images/img_arrowdown_blue_gray_900.svg';
+  static String imgArrowdownBlueGray900 =
+      'assets/images/img_arrowdown_blue_gray_900.svg';
 
   // static String imgEllipse11039x390 = 'assets/images/img_ellipse1_1039x390.png';
 
@@ -57,7 +57,7 @@ class ImageConstant {
 
   // static String imgGroup891 = 'assets/images/img_group891.png';
 
-  // static String imgDayalsuperaction = 'assets/images/img_dayalsuperaction.png';
+  static String imgDayalsuperaction = 'assets/images/img_dayalsuperaction.png';
 
   // static String imgUnsplashwnolnjo7ts8 =
   //     'assets/images/img_unsplashwnolnjo7ts8.png';
@@ -98,7 +98,7 @@ class ImageConstant {
 
   // static String imgAppbanner21 = 'assets/images/img_appbanner21.png';
 
-  // static String imgDayalshakti2 = 'assets/images/img_dayalshakti2.png';
+  static String imgDayalshakti2 = 'assets/images/img_dayalshakti2.png';
 
   // static String imgDayaldairyplus = 'assets/images/img_dayaldairyplus.png';
 

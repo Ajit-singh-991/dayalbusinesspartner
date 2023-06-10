@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:dayalbusinesspartner/pages/order_items.dart';
 import 'package:dayalbusinesspartner/utils/app_decoration.dart';
 import 'package:dayalbusinesspartner/utils/app_style.dart';
 import 'package:dayalbusinesspartner/widgets/color_constant.dart';
@@ -32,47 +33,46 @@ class _OrderIosTwoScreenState extends State<OrderIosTwoScreen> {
   Map<String, List<Map<String, dynamic>>> modifiedOrderDetails = {};
   List<Map<String, dynamic>> schemeData = [];
 
- void fetchData() async {
-  final url = Uri.parse('http://66.94.34.21:8090/getOrderDetails');
-  final requestBody = json.encode({
-    'id': widget.id.toString(),
-    'orderId': widget.orderid.toString(),
-  });
-  final response = await http.post(
-    url,
-    headers: {"Content-Type": "application/json"},
-    body: requestBody,
-  );
+  void fetchData() async {
+    final url = Uri.parse('http://66.94.34.21:8090/getOrderDetails');
+    final requestBody = json.encode({
+      'id': widget.id.toString(),
+      'orderId': widget.orderid.toString(),
+      //'orderId': widget.orderid.toString(),
+    });
+    final response = await http.post(
+      url,
+      headers: {"Content-Type": "application/json"},
+      body: requestBody,
+    );
 
-  if (response.statusCode == 200) {
-    final responseBody = response.body;
-    if (responseBody.isNotEmpty) {
-      final decodedData = json.decode(responseBody);
+    if (response.statusCode == 200) {
+      final responseBody = response.body;
+      if (responseBody.isNotEmpty) {
+        final decodedData = json.decode(responseBody);
+        final orderData = decodedData['orderData'];
+        if (orderData != null && orderData is Map<String, dynamic>) {
+          modifiedOrderDetails = Map.fromEntries(orderData.entries.map((entry) {
+            final dealerName = entry.key;
+            final orderList = entry.value;
+            if (orderList is List) {
+              return MapEntry(
+                  dealerName, orderList.cast<Map<String, dynamic>>());
+            }
+            return MapEntry(dealerName, []);
+          }));
+        }
 
-      final orderData = decodedData['orderData'];
-      if (orderData != null && orderData is Map<String, dynamic>) {
-        modifiedOrderDetails = Map.fromEntries(orderData.entries.map((entry) {
-          final dealerName = entry.key;
-          final orderList = entry.value;
-          if (orderList is List) {
-            return MapEntry(
-                dealerName, orderList.cast<Map<String, dynamic>>());
-          }
-          return MapEntry(dealerName, []);
-        }));
+        final schemeDataList = decodedData['schemeData'];
+        if (schemeDataList != null && schemeDataList is List) {
+          schemeData = schemeDataList.cast<Map<String, dynamic>>();
+        }
+        setState(() {
+          name = decodedData['name'] ?? '';
+        });
       }
-
-      final schemeDataList = decodedData['schemeData'];
-      if (schemeDataList != null && schemeDataList is List) {
-        schemeData = schemeDataList.cast<Map<String, dynamic>>();
-      }
-
-      setState(() {
-        name = decodedData['name'] ?? '';
-      });
     }
   }
-}
 
   Future<void> fetchProfileData() async {
     const profileurl = 'http://66.94.34.21:8090/getProfile';
@@ -180,17 +180,45 @@ class _OrderIosTwoScreenState extends State<OrderIosTwoScreen> {
                             modifiedOrderDetails.keys.elementAt(index);
                         final orderData =
                             modifiedOrderDetails[dealerName] ?? [];
+
+                        var dealerId = orderData[0]['dealer_id'];
+                        // final scheme = schemeData.firstWhere((scheme) => scheme['dealer_id'] == dealerId,
+                        //     orElse: () => {});
+                        var myListFiltered = schemeData
+                            .where((e) =>
+                                e['dealer_id'].toString() ==
+                                dealerId.toString())
+                            .toList();
+
+                        if (myListFiltered.length > 0) {
+                          print("###" +
+                              dealerId.toString() +
+                              "####" +
+                              myListFiltered.length.toString());
+                        } else {
+                          print("###" +
+                              dealerId.toString() +
+                              "####" +
+                              myListFiltered.length.toString());
+                        }
+                        // final schemeName =
+                        // scheme != null ? scheme['scheme_name'] : 'No Scheme'
+
+                        int totalMT = orderData
+                            .map((item) => item['qty_in_bags'])
+                            .reduce((a, b) => a + b);
+
                         return Padding(
                           padding: getPadding(
                             left: 20,
                             right: 20,
                           ),
                           child: OrderCard(
-                            dealerName: dealerName,
-                            orderData: orderData,
-                            orderid: widget.orderid,
-                            schemeData: schemeData,
-                          ),
+                              dealerName: dealerName,
+                              orderData: orderData,
+                              orderid: widget.orderid,
+                              schemeData: myListFiltered,
+                              totalMT: totalMT.toString(), id: widget.id, userType: widget.userType,),
                         );
                       },
                     ),
@@ -211,15 +239,19 @@ class _OrderIosTwoScreenState extends State<OrderIosTwoScreen> {
 
 class OrderCard extends StatelessWidget {
   final String dealerName;
+  final String totalMT;
   final List<Map<String, dynamic>> orderData;
   final int orderid;
+  final String userType;
+  final int id;
   final List<Map<String, dynamic>> schemeData;
   const OrderCard(
       {super.key,
       required this.dealerName,
       required this.orderData,
       required this.orderid,
-      required this.schemeData});
+      required this.schemeData,
+      required this.totalMT, required this.userType, required this.id});
 
   @override
   Widget build(BuildContext context) {
@@ -346,49 +378,105 @@ class OrderCard extends StatelessWidget {
                     );
                   },
                 ),
-                Padding(
-                    padding: getPadding(left: 21, top: 17),
-                    child: Text("Scheme",
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.left,
-                        style: AppStyle.txtInterMedium12)),
+                schemeData.length > 0
+                    ? Padding(
+                        padding: getPadding(left: 21, top: 17),
+                        child: Text("Scheme",
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.left,
+                            style: AppStyle.txtInterMedium12))
+                    : Container(),
                 ListView.builder(
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
-                  itemCount: orderData.length,
+                  itemCount: schemeData.length,
                   itemBuilder: (context, index) {
-                    final product = orderData[index];
-                    final schemeId = product['scheme_id'];
-                    final scheme = schemeData.firstWhere(
-                        (scheme) => scheme['scheme_id'] == schemeId,
-                        orElse: () => {});
-                    final schemeName =
-                        scheme != null ? scheme['scheme_name'] : 'No Scheme';
-                    final discount = scheme != null ? scheme['discount'] : 0;
                     return Column(
                       children: [
-                        // Padding(
-                        //     padding: getPadding(left: 34, top: 11),
-                        //     child: Row(children: [
-                        //       Text(schemeName,
-                        //           overflow: TextOverflow.ellipsis,
-                        //           textAlign: TextAlign.left,
-                        //           style: AppStyle.txtInterMedium12Bluegray900),
-                        //       const Spacer(),
-                        //       Text(discount.toString(),
-                        //           overflow: TextOverflow.ellipsis,
-                        //           textAlign: TextAlign.left,
-                        //           style: AppStyle.txtInterRegular10),
-                        //     ])),
+                        Padding(
+                            padding: getPadding(left: 34, top: 11),
+                            child: Row(children: [
+                              Text(schemeData[index]['item_name'].toString(),
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.left,
+                                  style: AppStyle.txtInterMedium12Bluegray900),
+                              const Spacer(),
+                              schemeData[index]['status'].toString() == 'V'
+                                  ? Padding(
+                                      padding: getPadding(right: 20),
+                                      child: Text(
+                                          schemeData[index]['no_of_out_item']
+                                                  .toString() +
+                                              " Pcs",
+                                          overflow: TextOverflow.ellipsis,
+                                          textAlign: TextAlign.left,
+                                          style: AppStyle.txtInterRegular10),
+                                    )
+                                  : Padding(
+                                      padding: getPadding(right: 20),
+                                      child: Text(
+                                          schemeData[index]['no_of_items']
+                                                  .toString() +
+                                              " Pcs",
+                                          overflow: TextOverflow.ellipsis,
+                                          textAlign: TextAlign.left,
+                                          style: AppStyle.txtInterRegular10),
+                                    ),
+                            ])),
                       ],
                     );
                   },
                 ),
+                SizedBox(
+                  height: 20,
+                ),
+                Container(
+                  width: getHorizontalSize(326),
+                  padding: getPadding(left: 14, top: 6, right: 14, bottom: 6),
+                  decoration: AppDecoration.fillblueGray001.copyWith(
+                    borderRadius: BorderRadiusStyle.roundedBorder8,
+                  ),
+                  child: Column(
+                    children: [
+                      Padding(
+                          padding: getPadding(left: 10, top: 5),
+                          child: Row(children: [
+                            Text("Total Bags/ Total MT",
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.left,
+                                style: AppStyle.txtBalooMedium16Gray600),
+                            const Spacer(),
+                            Padding(
+                              padding: getPadding(right: 5),
+                              child: Text(totalMT + " Bags",
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.left,
+                                  style: AppStyle.txtBalooMedium16Gray600),
+                            ),
+                          ])),
+                    ],
+                  ),
+                )
               ],
             ),
           ),
+          GestureDetector(
+              onTap: () {
+                onTapTxtAddedit(context);
+              },
+              child: Padding(
+                  padding: getPadding(top: 68, bottom: 7),
+                  child: Text("Add",
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.left,
+                      style: AppStyle.txtInterMedium13Blue400)))
         ],
       ),
     );
+  }
+
+  onTapTxtAddedit(BuildContext context) {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) =>  OrderIosOneScreen(id: id, userType: userType,)));
   }
 }

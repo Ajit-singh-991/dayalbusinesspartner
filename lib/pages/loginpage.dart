@@ -184,11 +184,14 @@ class LoginPageState extends State<LoginPage> {
                                           userType: userType,
                                         ),
                                       ));
-                                       var prefs =
-                                        await SharedPreferences.getInstance();
-                                    prefs.setBool(SplashScreenState.keyLogin,true);
-                                    prefs.setInt(SplashScreenState.keyid,id);
-                                    prefs.setString(SplashScreenState.keyuserType,userType);
+                                      var prefs =
+                                          await SharedPreferences.getInstance();
+                                      prefs.setBool(
+                                          SplashScreenState.keyLogin, true);
+                                      prefs.setInt(SplashScreenState.keyid, id);
+                                      prefs.setString(
+                                          SplashScreenState.keyuserType,
+                                          userType);
                                     });
                                   } else if (!status &&
                                       msg == 'user not found') {
@@ -243,11 +246,11 @@ class LoginPageState extends State<LoginPage> {
           ],
         ),
         Padding(
-          padding: const EdgeInsets.only(top: 110.0),
+          padding: const EdgeInsets.only(top: 80.0),
           child: Align(
             alignment: Alignment.topCenter,
             child: Image.asset(
-                height: 100, width: 150, 'assets/images/dayalgroup.png'),
+                height: 200, width: 250, 'assets/images/dayalgroup.png'),
           ),
         )
       ]),

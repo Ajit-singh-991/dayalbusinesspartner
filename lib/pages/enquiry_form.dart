@@ -87,14 +87,11 @@ class _EnquiryFormState extends State<EnquiryForm> {
         // final msg = responseData['msg'];
 
         if (status == true) {
-          // API call success, handle the response as needed
           showToast('Message sent successfully');
         } else {
-          // API call failed, handle the error as needed
           showToast('Failed to send message');
         }
       } else {
-        // Handle other HTTP status codes as needed
         showToast('HTTP Error: ${response.statusCode}');
       }
     }

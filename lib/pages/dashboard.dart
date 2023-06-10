@@ -872,7 +872,7 @@ class _DashboardState extends State<Dashboard> {
                       child: ListTile(
                         leading: const CircleAvatar(
                           backgroundImage: NetworkImage(
-                              "https://picsum.photos/200"), // No matter how big it is, it won't overflow
+                              "https://cdn.pixabay.com/photo/2018/08/28/12/41/avatar-3637425_1280.png"),
                         ),
                         title: Text(userName),
                         subtitle: const Text('Sales Person'),
@@ -932,7 +932,7 @@ class _DashboardState extends State<Dashboard> {
     return value;
   }
 
-    Future<List<dynamic>> _fetchProductsfeeds() async {
+  Future<List<dynamic>> _fetchProductsfeeds() async {
     const url = 'http://66.94.34.21:9000/getFilterProducts';
     //var state = await getValueFromLocalMemory("state");
 

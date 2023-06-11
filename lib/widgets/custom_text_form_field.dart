@@ -144,8 +144,8 @@ class CustomTextFormField extends StatelessWidget {
         );
       case TextFormFieldFontStyle.InterMedium11:
         return TextStyle(
-          color: Colors.grey[600],
-          fontSize: 11,
+          color: Colors.grey[500],
+          fontSize: 10,
           fontFamily: 'Inter',
           fontWeight: FontWeight.w500,
         );
@@ -276,13 +276,14 @@ class CustomTextFormField extends StatelessWidget {
           4,
         );
       case TextFormFieldPadding.PaddingAll7:
-        return const EdgeInsets.all( 7,
+        return const EdgeInsets.all(
+          7,
         );
       case TextFormFieldPadding.PaddingT3:
-        return const EdgeInsets.fromLTRB(3,3,0,3
-        );
+        return const EdgeInsets.fromLTRB(3, 3, 0, 3);
       default:
-        return const EdgeInsets.all(14,
+        return const EdgeInsets.all(
+          14,
         );
     }
   }

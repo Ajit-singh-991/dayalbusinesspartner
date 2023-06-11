@@ -238,7 +238,7 @@ class AppStyle {
   );
 
   static TextStyle txtInterMedium14 = TextStyle(
-    color: ColorConstant.gray600,
+    color: ColorConstant.black900,
     fontSize: getFontSize(
       14,
     ),
@@ -247,7 +247,7 @@ class AppStyle {
   );
 
   static TextStyle txtInterMedium13Blue400 = TextStyle(
-    color: ColorConstant.blue400,
+    color: ColorConstant.gray600,
     fontSize: getFontSize(
       13,
     ),

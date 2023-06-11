@@ -13,6 +13,7 @@ class CustomDropDown extends StatelessWidget {
       this.fontStyle,
       this.alignment,
       this.width,
+      this.height,
       this.margin,
       this.focusNode,
       this.icon,
@@ -34,6 +35,8 @@ class CustomDropDown extends StatelessWidget {
   Alignment? alignment;
 
   double? width;
+
+  double? height;
 
   EdgeInsetsGeometry? margin;
 
@@ -65,6 +68,7 @@ class CustomDropDown extends StatelessWidget {
 
   _buildDropDownWidget() {
     return Container(
+      height: height,
       width: width ?? double.maxFinite,
       margin: margin,
       child: DropdownButtonFormField(
@@ -79,13 +83,13 @@ class CustomDropDown extends StatelessWidget {
               value,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
-          color: ColorConstant.blueGray400,
-          fontSize: getFontSize(
-            16,
-          ),
-          fontFamily: 'Inter',
-          fontWeight: FontWeight.w400,
-        ),
+                color: ColorConstant.blueGray400,
+                fontSize: getFontSize(
+                  16,
+                ),
+                fontFamily: 'Inter',
+                fontWeight: FontWeight.w400,
+              ),
             ),
           );
         }).toList(),
@@ -139,7 +143,7 @@ class CustomDropDown extends StatelessWidget {
     }
   }
 
- _setBorderStyle() {
+  _setBorderStyle() {
     switch (variant) {
       case DropDownVariant.OutlineGray600:
         return OutlineInputBorder(
@@ -228,7 +232,7 @@ enum DropDownPadding {
 }
 
 enum DropDownVariant {
-    None,
+  None,
   OutlineGray400,
   OutlineGray600,
   FillYellow400,
@@ -241,4 +245,3 @@ enum DropDownVariant {
 enum DropDownFontStyle {
   InterMedium20,
 }
-

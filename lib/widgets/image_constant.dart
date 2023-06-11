@@ -62,7 +62,7 @@ class ImageConstant {
   // static String imgUnsplashwnolnjo7ts8 =
   //     'assets/images/img_unsplashwnolnjo7ts8.png';
 
-  // static String imgPlus = 'assets/images/img_plus.svg';
+  static String imgPlus = 'assets/images/img_plus.svg';
 
   // static String imgDayalmilktonic = 'assets/images/img_dayalmilktonic.png';
 

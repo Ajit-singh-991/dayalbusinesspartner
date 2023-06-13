@@ -12,6 +12,7 @@ import 'package:dayalbusinesspartner/widgets/size_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class OrderIosOneScreen extends StatefulWidget {
   final String userType;
@@ -23,7 +24,12 @@ class OrderIosOneScreen extends StatefulWidget {
   State<OrderIosOneScreen> createState() => _OrderIosOneScreenState();
 }
 
-class _OrderIosOneScreenState extends State<OrderIosOneScreen> {
+class _OrderIosOneScreenState extends State<OrderIosOneScreen>
+    with SingleTickerProviderStateMixin {
+  TextEditingController controllerText = TextEditingController();
+  late TabController _tabController;
+  Map<String, dynamic> schemeData = {};
+  List<String> selectedScheme = [];
   List<String> dropdownItemList = [
     "50 Kg",
     "45 Kg",
@@ -79,8 +85,20 @@ class _OrderIosOneScreenState extends State<OrderIosOneScreen> {
   @override
   void initState() {
     super.initState();
+    fetchSchemeData().then((data) {
+      setState(() {
+        schemeData = data['data'];
+      });
+    });
+    _tabController = TabController(length: 2, vsync: this);
     fetchProfileData();
     fetchData();
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   Future<void> fetchData() async {
@@ -96,9 +114,21 @@ class _OrderIosOneScreenState extends State<OrderIosOneScreen> {
       setState(() {
         dealers = data['dealers'] ?? [];
         products = data['products'] ?? [];
-        schemes = data['schemes'] ?? {};
+        // schemeData = data['schemes'] ?? {};
         selectedDealer = null;
       });
+    }
+  }
+
+  final apiUrl = 'http://66.94.34.21:8090/getCurrentScheme';
+
+  Future<Map<String, dynamic>> fetchSchemeData() async {
+    final response = await http.get(Uri.parse(apiUrl));
+
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      throw Exception('Failed to fetch scheme data');
     }
   }
 
@@ -193,22 +223,50 @@ class _OrderIosOneScreenState extends State<OrderIosOneScreen> {
                   ),
                 ),
                 DefaultTabController(
-                  length: 2, // Number of tabs
+                  initialIndex: 0,
+                  length: 2,
                   child: Column(
                     children: [
                       TabBar(
+                        indicator: BoxDecoration(color: Colors.transparent),
                         tabs: [
                           Tab(
-                            child: Container(
-                                color: Colors.red,
-                                child: const Text('Product Item')),
+                            child: Expanded(
+                                child: CustomButton(
+                              height: getVerticalSize(33),
+                              text: "Product Item",
+                              margin: getMargin(right: 4),
+                              variant: _tabController.index == 0
+                                  ? ButtonVariant.FillYellow400
+                                  : ButtonVariant.FillWhiteA700,
+                              shape: ButtonShape.RoundedBorder8,
+                              fontStyle: _tabController.index == 0
+                                  ? ButtonFontStyle.InterRegular12
+                                  : ButtonFontStyle.InterRegular12Gray600,
+                            )),
                           ),
                           Tab(
-                            child: Container(
-                                color: Colors.amber,
-                                child: const Text('Scheme Item')),
+                            child: Expanded(
+                              child: CustomButton(
+                                height: getVerticalSize(33),
+                                text: "Scheme Item",
+                                margin: getMargin(left: 4),
+                                variant: _tabController.index == 1
+                                    ? ButtonVariant.FillYellow400
+                                    : ButtonVariant.FillWhiteA700,
+                                shape: ButtonShape.RoundedBorder8,
+                                fontStyle: _tabController.index == 1
+                                    ? ButtonFontStyle.InterRegular12
+                                    : ButtonFontStyle.InterRegular12Gray600,
+                              ),
+                            ),
                           ),
                         ],
+                        onTap: (index) {
+                          setState(() {
+                            _tabController.index = index;
+                          });
+                        },
                       ),
                       Container(
                         height: MediaQuery.of(context).size.height * 0.7,
@@ -352,7 +410,21 @@ class _OrderIosOneScreenState extends State<OrderIosOneScreen> {
                                                       .InterRegular10,
                                                   alignment:
                                                       Alignment.bottomRight,
-                                                  onTap: () {},
+                                                  onTap: () {
+                                                    int selectedWeightValue =
+                                                        int.parse(weight!
+                                                            .replaceAll(
+                                                                RegExp(r'\D'),
+                                                                ''));
+                                                    int quantity = int.parse(
+                                                        quantityController
+                                                            .text);
+                                                    double totalweightMT =
+                                                        selectedWeightValue *
+                                                            quantity /
+                                                            1000;
+                                                    log('Total Weight: $totalweightMT');
+                                                  },
                                                 ),
                                               ),
                                             ],
@@ -366,9 +438,265 @@ class _OrderIosOneScreenState extends State<OrderIosOneScreen> {
                             ),
                             // Content for the second tab (Scheme Item)
                             Container(
-                              color: Colors.green,
-                              child: const Center(
-                                child: Text('Scheme Item Content'),
+                              color: ColorConstant.whiteA700,
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: schemeData.length,
+                                itemBuilder: (context, index) {
+                                  final schemeName =
+                                      schemeData.keys.toList()[index];
+                                  final schemeItems = schemeData[schemeName];
+                                  return Container(
+                                    margin: getMargin(top: 6),
+                                    padding: getPadding(
+                                        left: 20,
+                                        top: 16,
+                                        right: 20,
+                                        bottom: 16),
+                                    decoration: AppDecoration.fillWhiteA700
+                                        .copyWith(
+                                            borderRadius: BorderRadiusStyle
+                                                .roundedBorder8),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Padding(
+                                          padding:
+                                              getPadding(left: 20, right: 10),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Container(
+                                                width: getHorizontalSize(81),
+                                                margin: getMargin(bottom: 1),
+                                                child: Text(
+                                                  "From",
+                                                  maxLines: null,
+                                                  textAlign: TextAlign.left,
+                                                  style: AppStyle
+                                                      .txtInterRegular12Bluegray900,
+                                                ),
+                                              ),
+                                              Container(
+                                                width: getHorizontalSize(81),
+                                                margin: getMargin(bottom: 1),
+                                                child: Text(
+                                                  DateFormat('dd MMM yyyy')
+                                                      .format(DateTime.parse(
+                                                    schemeItems[index]
+                                                        ['scheme_from'],
+                                                  )),
+                                                  maxLines: null,
+                                                  textAlign: TextAlign.left,
+                                                  style: AppStyle
+                                                      .txtInterRegular12Bluegray900,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: getPadding(
+                                              left: 20, right: 10, bottom: 20),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Container(
+                                                width: getHorizontalSize(81),
+                                                margin: getMargin(bottom: 1),
+                                                child: Text(
+                                                  "To",
+                                                  maxLines: null,
+                                                  textAlign: TextAlign.left,
+                                                  style: AppStyle
+                                                      .txtInterRegular12Bluegray900,
+                                                ),
+                                              ),
+                                              Container(
+                                                width: getHorizontalSize(81),
+                                                margin: getMargin(bottom: 1),
+                                                child: Text(
+                                                  DateFormat('dd MMM yyyy')
+                                                      .format(DateTime.parse(
+                                                    schemeItems[index]
+                                                        ['scheme_to'],
+                                                  )),
+                                                  maxLines: null,
+                                                  textAlign: TextAlign.left,
+                                                  style: AppStyle
+                                                      .txtInterRegular12Bluegray900,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Container(
+                                          padding: getPadding(all: 2),
+                                          decoration: AppDecoration
+                                              .outlineGray400
+                                              .copyWith(
+                                                  borderRadius:
+                                                      BorderRadiusStyle
+                                                          .roundedBorder8),
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                width: double.maxFinite,
+                                                child: Container(
+                                                  width: getHorizontalSize(326),
+                                                  padding: getPadding(
+                                                      left: 14,
+                                                      top: 6,
+                                                      right: 14,
+                                                      bottom: 6),
+                                                  decoration: AppDecoration
+                                                      .fillRed7000c
+                                                      .copyWith(
+                                                    borderRadius:
+                                                        BorderRadiusStyle
+                                                            .roundedBorder8,
+                                                  ),
+                                                  child: RichText(
+                                                    text: TextSpan(
+                                                      children: [
+                                                        TextSpan(
+                                                          text: "$schemeName ",
+                                                          style: TextStyle(
+                                                            color: ColorConstant
+                                                                .blueGray900,
+                                                            fontSize:
+                                                                getFontSize(
+                                                                    14.7),
+                                                            fontFamily: 'Inter',
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                          ),
+                                                        ),
+                                                        TextSpan(
+                                                          text: "( Dealer )",
+                                                          style: TextStyle(
+                                                            color: ColorConstant
+                                                                .blueGray900,
+                                                            fontSize:
+                                                                getFontSize(
+                                                                    12.25),
+                                                            fontFamily: 'Inter',
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    textAlign: TextAlign.left,
+                                                  ),
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: getPadding(
+                                                    left: 21, top: 9),
+                                                child: Text(
+                                                  "Schemes",
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  textAlign: TextAlign.left,
+                                                  style:
+                                                      AppStyle.txtInterMedium12,
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: getPadding(
+                                                    left: 34, top: 11),
+                                                child: Column(
+                                                  children: [
+                                                    ListView.builder(
+                                                      shrinkWrap: true,
+                                                      physics:
+                                                          const NeverScrollableScrollPhysics(),
+                                                      itemCount:
+                                                          schemeItems.length,
+                                                      itemBuilder:
+                                                          (context, itemIndex) {
+                                                        final item =
+                                                            schemeItems[
+                                                                itemIndex];
+                                                        return CheckboxListTile(
+                                                          title: Padding(
+                                                              padding: getPadding(
+                                                                  left: 6,
+                                                                  top: 11,
+                                                                  right: 20),
+                                                              child:
+                                                                  Row(children: [
+                                                                Padding(
+                                                                  padding:
+                                                                      getPadding(
+                                                                          right:
+                                                                              20),
+                                                                  child: Text(
+                                                                      " ${item['scheme_mt']} MT",
+                                                                      overflow:
+                                                                          TextOverflow
+                                                                              .ellipsis,
+                                                                      textAlign:
+                                                                          TextAlign
+                                                                              .left,
+                                                                      style: AppStyle
+                                                                          .txtInterMedium12Bluegray900),
+                                                                ),
+                                                                const Spacer(),
+                                                                Text(
+                                                                    item[
+                                                                        'item_name'],
+                                                                    overflow:
+                                                                        TextOverflow
+                                                                            .ellipsis,
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .left,
+                                                                    style: AppStyle
+                                                                        .txtInterMedium12Bluegray900),
+                                                              ])),
+                                                        onChanged: (value) {
+                                      setState(() {
+                                        if (value == true) {
+                                          selectedScheme.add(item['item_name']);
+                                          controllerText.text =
+                                              selectedScheme.join(', ');
+                                        } else {
+                                          selectedScheme
+                                              .remove(item['item_name']);
+                                          controllerText.text =
+                                              selectedScheme.join(', ');
+                                        }
+                                      });
+                                    },
+                                    value: selectedScheme
+                                        .contains(item['item_name']),
+                                                        );
+                                                      },
+                                                    ),
+                                                    const Divider(),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
                               ),
                             ),
                           ],
@@ -376,12 +704,22 @@ class _OrderIosOneScreenState extends State<OrderIosOneScreen> {
                       ),
                     ],
                   ),
-                )
+                ),
               ],
             ),
           ))
         ],
       ),
+      floatingActionButton: CustomButton(
+          height: getVerticalSize(54),
+          width: getHorizontalSize(175),
+          text: "Done".toUpperCase(),
+          margin: getMargin(top: 50, bottom: 37),
+          padding: ButtonPadding.PaddingAll19,
+          fontStyle: ButtonFontStyle.InterMedium13,
+          onTap: () {
+            // onTapDone(context);
+          }),
     );
   }
 

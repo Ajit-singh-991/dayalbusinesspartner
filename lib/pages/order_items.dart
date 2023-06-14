@@ -46,7 +46,7 @@ class _OrderIosOneScreenState extends State<OrderIosOneScreen>
 
   TextEditingController weightController = TextEditingController();
 
-  TextEditingController quantityController = TextEditingController();
+  List<TextEditingController> quantityControllers = [];
 
   TextEditingController remarksController = TextEditingController();
 
@@ -57,6 +57,8 @@ class _OrderIosOneScreenState extends State<OrderIosOneScreen>
   String name = '';
   String? selectedDealer;
   String? weight;
+  String selectedDealerId = '';
+  List<Map<String, dynamic>> selectedProducts = [];
 
   Future<void> fetchProfileData() async {
     const profileurl = 'http://66.94.34.21:8090/getProfile';
@@ -211,6 +213,7 @@ class _OrderIosOneScreenState extends State<OrderIosOneScreen>
                     onChanged: (value) {
                       setState(() {
                         selectedDealer = value;
+                        selectedDealerId = selectedDealer.toString();
                       });
                     },
                     dropdownColor: Colors.grey[200],
@@ -276,7 +279,14 @@ class _OrderIosOneScreenState extends State<OrderIosOneScreen>
                               child: ListView.builder(
                                 itemCount: products.length,
                                 itemBuilder: (context, index) {
+                                  if (index >= quantityControllers.length) {
+                                    quantityControllers
+                                        .add(TextEditingController());
+                                  }
+                                  final quantityController =
+                                      quantityControllers[index];
                                   final product = products[index];
+                                  bool isSelected = false;
                                   return Padding(
                                     padding: getPadding(bottom: 20),
                                     child: Container(
@@ -411,19 +421,40 @@ class _OrderIosOneScreenState extends State<OrderIosOneScreen>
                                                   alignment:
                                                       Alignment.bottomRight,
                                                   onTap: () {
-                                                    int selectedWeightValue =
-                                                        int.parse(weight!
-                                                            .replaceAll(
-                                                                RegExp(r'\D'),
-                                                                ''));
-                                                    int quantity = int.parse(
-                                                        quantityController
-                                                            .text);
-                                                    double totalweightMT =
-                                                        selectedWeightValue *
-                                                            quantity /
-                                                            1000;
-                                                    log('Total Weight: $totalweightMT');
+                                                    setState(() {
+                                                      isSelected = !isSelected;
+
+                                                      if (isSelected) {
+                                                        int selectedWeightValue =
+                                                            int.parse(weight!
+                                                                .replaceAll(
+                                                                    RegExp(
+                                                                        r'\D'),
+                                                                    ''));
+                                                        int quantity = int.parse(
+                                                            quantityController
+                                                                .text);
+                                                        double totalWeightMT =
+                                                            selectedWeightValue *
+                                                                quantity /
+                                                                1000;
+                                                        log('Total Weight: $totalWeightMT');
+                                                        Map<String, dynamic>
+                                                            productMap = {
+                                                          selectedDealerId: [
+                                                            {
+                                                              'pId': product[
+                                                                  'product_id'],
+                                                              'qty': quantity
+                                                                  .toString(),
+                                                              'unit': weight!,
+                                                            }
+                                                          ]
+                                                        };
+                                                        selectedProducts
+                                                            .add(productMap);
+                                                      }
+                                                    });
                                                   },
                                                 ),
                                               ),
@@ -632,57 +663,67 @@ class _OrderIosOneScreenState extends State<OrderIosOneScreen>
                                                                 itemIndex];
                                                         return CheckboxListTile(
                                                           title: Padding(
-                                                              padding: getPadding(
-                                                                  left: 6,
-                                                                  top: 11,
-                                                                  right: 20),
-                                                              child:
-                                                                  Row(children: [
-                                                                Padding(
-                                                                  padding:
-                                                                      getPadding(
+                                                              padding:
+                                                                  getPadding(
+                                                                      left: 6,
+                                                                      top: 11,
+                                                                      right:
+                                                                          20),
+                                                              child: Row(
+                                                                  children: [
+                                                                    Padding(
+                                                                      padding: getPadding(
                                                                           right:
                                                                               20),
-                                                                  child: Text(
-                                                                      " ${item['scheme_mt']} MT",
-                                                                      overflow:
-                                                                          TextOverflow
+                                                                      child: Text(
+                                                                          " ${item['scheme_mt']} MT",
+                                                                          overflow: TextOverflow
                                                                               .ellipsis,
-                                                                      textAlign:
-                                                                          TextAlign
+                                                                          textAlign: TextAlign
                                                                               .left,
-                                                                      style: AppStyle
-                                                                          .txtInterMedium12Bluegray900),
-                                                                ),
-                                                                const Spacer(),
-                                                                Text(
-                                                                    item[
-                                                                        'item_name'],
-                                                                    overflow:
-                                                                        TextOverflow
-                                                                            .ellipsis,
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .left,
-                                                                    style: AppStyle
-                                                                        .txtInterMedium12Bluegray900),
-                                                              ])),
-                                                        onChanged: (value) {
-                                      setState(() {
-                                        if (value == true) {
-                                          selectedScheme.add(item['item_name']);
-                                          controllerText.text =
-                                              selectedScheme.join(', ');
-                                        } else {
-                                          selectedScheme
-                                              .remove(item['item_name']);
-                                          controllerText.text =
-                                              selectedScheme.join(', ');
-                                        }
-                                      });
-                                    },
-                                    value: selectedScheme
-                                        .contains(item['item_name']),
+                                                                          style:
+                                                                              AppStyle.txtInterMedium12Bluegray900),
+                                                                    ),
+                                                                    const Spacer(),
+                                                                    Text(
+                                                                        item[
+                                                                            'item_name'],
+                                                                        overflow:
+                                                                            TextOverflow
+                                                                                .ellipsis,
+                                                                        textAlign:
+                                                                            TextAlign
+                                                                                .left,
+                                                                        style: AppStyle
+                                                                            .txtInterMedium12Bluegray900),
+                                                                  ])),
+                                                          onChanged: (value) {
+                                                            setState(() {
+                                                              if (value ==
+                                                                  true) {
+                                                                selectedScheme
+                                                                    .add(item[
+                                                                        'item_name']);
+                                                                controllerText
+                                                                        .text =
+                                                                    selectedScheme
+                                                                        .join(
+                                                                            ', ');
+                                                              } else {
+                                                                selectedScheme
+                                                                    .remove(item[
+                                                                        'item_name']);
+                                                                controllerText
+                                                                        .text =
+                                                                    selectedScheme
+                                                                        .join(
+                                                                            ', ');
+                                                              }
+                                                            });
+                                                          },
+                                                          value: selectedScheme
+                                                              .contains(item[
+                                                                  'item_name']),
                                                         );
                                                       },
                                                     ),
@@ -718,6 +759,10 @@ class _OrderIosOneScreenState extends State<OrderIosOneScreen>
           padding: ButtonPadding.PaddingAll19,
           fontStyle: ButtonFontStyle.InterMedium13,
           onTap: () {
+            List<String> selectedSchemes = selectedScheme;
+            Map<String, dynamic> json = generateJSON(
+                selectedDealerId, selectedProducts, selectedSchemes);
+            print(json);
             // onTapDone(context);
           }),
     );
@@ -725,5 +770,27 @@ class _OrderIosOneScreenState extends State<OrderIosOneScreen>
 
   onTapArrowleft3(BuildContext context) {
     Navigator.pop(context);
+  }
+
+  Map<String, dynamic> generateJSON(
+    String selectedDealerId,
+    List<Map<String, dynamic>> selectedProducts,
+    List<String> selectedSchemes,
+  ) {
+    List<Map<String, dynamic>> schemeList = [
+      {selectedDealerId: selectedSchemes}
+    ];
+
+    List<Map<String, dynamic>> productsList = [
+      {selectedDealerId: selectedProducts}
+    ];
+
+    Map<String, dynamic> json = {
+      'scheme': schemeList,
+      'products': productsList,
+    };
+
+    log('the json is======== $json');
+    return json;
   }
 }
